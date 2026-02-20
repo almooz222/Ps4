@@ -1,24 +1,13 @@
 CACHE MANIFEST 
-# Baleegh Store 2 - Ultra Slim
-# v2.2.0 - 2026-02-19
+# Baleegh Store 2 - Lite Core Edition
+# v3.0.0 - 2026-02-20
 
 CACHE:
 index.html
 js/index.js
 payloads/Jailbreak.js
-payloads/payloads.js
 payloads/GoldHEN/GoldHEN.bin
 payloads/HEN/HEN.bin
-payloads/Bins/Tools/ftp.bin
-payloads/Bins/Tools/disable-updates.bin
-payloads/Bins/Tools/enable-updates.bin
-payloads/Bins/Tools/history-blocker.bin
-payloads/Bins/Tools/ps4debug.bin
-payloads/Bins/Tools/backup.bin
-payloads/Bins/Tools/restore.bin
-payloads/Bins/Tools/ToDex.bin
-payloads/Bins/GTA/ArabicGuy-1.0-1.27-rfoodxmodz.bin
-payloads/Bins/RDR2/OystersMenu-1.29-FREE.bin
 
 # PSFree Core Modules
 psfree/alert.mjs
