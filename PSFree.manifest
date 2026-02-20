@@ -1,0 +1,52 @@
+CACHE MANIFEST 
+# Baleegh Store 2 - Ultra Slim
+# v2.2.0 - 2026-02-19
+
+CACHE:
+index.html
+js/index.js
+payloads/Jailbreak.js
+payloads/payloads.js
+payloads/GoldHEN/GoldHEN.bin
+payloads/HEN/HEN.bin
+payloads/Bins/Tools/ftp.bin
+payloads/Bins/Tools/disable-updates.bin
+payloads/Bins/Tools/enable-updates.bin
+payloads/Bins/Tools/history-blocker.bin
+payloads/Bins/Tools/ps4debug.bin
+payloads/Bins/Tools/backup.bin
+payloads/Bins/Tools/restore.bin
+payloads/Bins/Tools/ToDex.bin
+payloads/Bins/GTA/ArabicGuy-1.0-1.27-rfoodxmodz.bin
+payloads/Bins/RDR2/OystersMenu-1.29-FREE.bin
+
+# PSFree Core Modules
+psfree/alert.mjs
+psfree/config.mjs
+psfree/lapse.mjs
+psfree/psfree.mjs
+psfree/send.mjs
+psfree/kpatch/700.bin
+psfree/kpatch/750.bin
+psfree/kpatch/800.bin
+psfree/kpatch/850.bin
+psfree/kpatch/900.bin
+psfree/kpatch/903.bin
+psfree/kpatch/950.bin
+psfree/module/chain.mjs
+psfree/module/int64.mjs
+psfree/module/mem.mjs
+psfree/module/memtools.mjs
+psfree/module/offset.mjs
+psfree/module/rw.mjs
+psfree/module/utils.mjs
+psfree/module/view.mjs
+psfree/rop/ps4/700.mjs
+psfree/rop/ps4/750.mjs
+psfree/rop/ps4/800.mjs
+psfree/rop/ps4/850.mjs
+psfree/rop/ps4/900.mjs
+psfree/rop/ps4/950.mjs
+
+NETWORK:
+*
