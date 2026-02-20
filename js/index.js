@@ -10,14 +10,8 @@ window.addEventListener('DOMContentLoaded', () => {
     checksettings();
 });
 
-// مستمعات الأحداث الأساسية
 document.getElementById('jailbreak').addEventListener('click', jailbreak);
-document.getElementById('binloader').addEventListener('click', binloader);
-document.querySelectorAll('button[data-func]').forEach(btn => {
-    btn.addEventListener('click', () => Loadpayloads(btn.getAttribute('data-func')));
-});
 
-// فحص الفيرموير
 function CheckFW() {
     const userAgent = navigator.userAgent;
     const ps4Regex = /PlayStation 4\/(\d+\.\d+)/;
@@ -34,7 +28,6 @@ function CheckFW() {
     }
 }
 
-// إدارة الثيمات (ألوان المتجر)
 function checksettings() {
     const isHen = localStorage.getItem('HEN');
     const color = isHen ? '#FFB84D' : '#00adef';
@@ -55,28 +48,6 @@ function choosejb(hen) {
     checksettings();
 }
 
-function showpayloads() {
-    const jbPage = document.getElementById('jailbreak-page');
-    const plPage = document.getElementById('payloads-page');
-    const btn = document.getElementById('payloadsbtn');
-
-    if (plPage.style.display === 'none' || plPage.style.display === '') {
-        jbPage.style.display = 'none';
-        plPage.style.display = 'block';
-        btn.textContent = 'الرئيسية';
-    } else {
-        jbPage.style.display = 'block';
-        plPage.style.display = 'none';
-        btn.textContent = 'البايلودات';
-    }
-}
-
-function showSection(sec) {
-    document.getElementById('tools-section').style.display = sec === 'tools' ? 'grid' : 'none';
-    document.getElementById('games-section').style.display = sec === 'games' ? 'grid' : 'none';
-}
-
-// دوال الثغرة الأساسية
 async function jailbreak() {
     if (sessionStorage.getItem('jbsuccess')) {
         alert("الجهاز مهكر بالفعل!");
@@ -94,30 +65,29 @@ async function jailbreak() {
     } catch (e) { log("خطأ في التحميل: " + e); }
 }
 
-async function Loadpayloads(payload) {
-    log(`جاري تشغيل: ${payload}...`);
-    try {
-        const modules = await import('../payloads/payloads.js');
-        if (modules[payload]) modules[payload]();
-        else log("البايلود غير مدعوم.");
-    } catch (e) { log("فشل التحميل: " + e); }
-}
-
 function log(msg) {
     consoleDev.textContent += msg + "\n";
     consoleDev.scrollTop = consoleDev.scrollHeight;
 }
 
-// دوال النوافذ
 function showsettings() { document.getElementById('settings-popup').style.display = 'block'; document.getElementById('overlay-popup').style.display = 'block'; }
 function showabout() { document.getElementById('about-popup').style.display = 'block'; document.getElementById('overlay-popup').style.display = 'block'; }
 function closeAll() { document.querySelectorAll('.popup, .overlay').forEach(el => el.style.display = 'none'); }
+
 function loadjbflavor() {
     const saved = localStorage.getItem('selectedHEN');
-    if (saved) document.querySelector(`input[value="${saved}"]`).checked = true;
+    if (saved) {
+        const el = document.querySelector(`input[value="${saved}"]`);
+        if(el) el.checked = true;
+    }
 }
+
 function loadajbsettings() {
     ckbaj.checked = localStorage.getItem('autojbstate') === 'true';
     ckbdc.checked = localStorage.getItem('dbugc') === 'true';
     if (ckbdc.checked) document.getElementById('DebugConsole').style.display = 'block';
-} 
+    
+    if (ckbaj.checked && !sessionStorage.getItem('jbsuccess')) {
+        setTimeout(jailbreak, 3000);
+    }
+}
