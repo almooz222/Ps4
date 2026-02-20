@@ -120,4 +120,4 @@ function loadajbsettings() {
     ckbaj.checked = localStorage.getItem('autojbstate') === 'true';
     ckbdc.checked = localStorage.getItem('dbugc') === 'true';
     if (ckbdc.checked) document.getElementById('DebugConsole').style.display = 'block';
-}
+} 
