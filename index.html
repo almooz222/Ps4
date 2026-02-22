@@ -6,133 +6,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <script>
-        function DLProgress(e){
-            if(e.total > 0){
-                var Percent=(Math.round(e.loaded / e.total * 100));
-                document.getElementById('cache-status').style.display = 'block';
-                document.getElementById('cache-bar').style.width = Percent + '%';
-                document.getElementById('cache-text').innerHTML = "تثبيت النسخة الخفيفة: " + Percent + "%";
-            }
-        }
-        function DisplayCacheProgress(){
-            document.getElementById('cache-text').innerHTML = "تم التثبيت بنجاح! افصل الإنترنت.";
-            document.getElementById('cache-bar').style.width = '100%';
-            setTimeout(function(){ document.getElementById('cache-status').style.display = 'none'; }, 3000);
-        }
-        window.applicationCache.addEventListener("progress",DLProgress,false);
-        window.applicationCache.oncached=function(e){DisplayCacheProgress();};
-        window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
-    </script>
-
     <style>
-        :root { 
-            --dark-navy: #020813; /* كحلي غامق جداً */
-            --electric-blue: #00adef; 
-            --btn-border: #1fa9dc; 
-            --hen-color: #FFB84D; 
-        }
-        
-        * { box-sizing: border-box; }
-
+        :root { --dark-navy: #020813; --electric-blue: #00adef; --btn-border: #1fa9dc; }
         body { 
             background: radial-gradient(circle at center, #09162a 0%, var(--dark-navy) 100%); 
-            width: 100vw;
-            height: 100vh; /* يمنع السكرول ويجعل الشاشة ثابتة */
-            color: #fff; 
-            margin: 0; 
-            padding: 0;
-            font-family: 'Cairo', sans-serif; 
-            overflow: hidden; /* إخفاء أي تمدد خارج الشاشة */
-            display: flex;
-            flex-direction: column;
+            width: 100vw; height: 100vh; color: #fff; margin: 0; padding: 0;
+            font-family: 'Cairo', sans-serif; overflow: hidden;
+            display: flex; flex-direction: column;
         }
-
-        #cache-status { display: none; position: fixed; top: 0; width: 100%; background: #000; z-index: 10000; text-align: center; padding: 10px 0; border-bottom: 2px solid var(--electric-blue); font-size: 18px; font-weight: bold; }
+        #cache-status { display: none; position: fixed; top: 0; width: 100%; background: #000; z-index: 10000; text-align: center; padding: 10px 0; border-bottom: 2px solid var(--electric-blue); font-size: 18px; }
         #cache-bar { height: 4px; background: var(--electric-blue); width: 0%; transition: width 0.2s; position: absolute; bottom: 0; }
-        
-        .bg-logo-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 38vw; opacity: 0.02; z-index: -1; pointer-events: none; font-weight: 900; letter-spacing: -10px; }
-        
-        /* القائمة الجانبية تم توسيطها عمودياً على اليمين */
         .floating-menu { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); z-index: 100; display: flex; flex-direction: column; gap: 18px; }
-        .menu-btn { background: rgba(0,0,0,0.6); border: 2px solid var(--btn-border); color: #fff; padding: 12px 25px; border-radius: 8px; font-weight: 700; font-size: 18px; cursor: pointer; transition: 0.2s; width: 140px; }
-        
-        /* حاوية المنتصف للعنوان وزر البلايستيشن */
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-top: -40px; /* لرفع المحتوى قليلاً بعيداً عن الفوتر */
-        }
-
-        .header-title { font-size: 3.8em; margin: 0 0 15px 0; text-shadow: 0 0 20px var(--electric-blue); font-weight: 900; }
-        #PS4FW { background: rgba(0,0,0,0.5); padding: 8px 30px; border-radius: 25px; font-size: 18px; border: 1px solid var(--btn-border); direction: ltr; margin-bottom: 40px; letter-spacing: 1px; }
-        
-        .ps-btn { width: 170px; height: 170px; border-radius: 50%; background: #04101f; border: 4px solid var(--electric-blue); cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 173, 239, 0.2); transition: 0.3s; }
+        .menu-btn { background: rgba(0,0,0,0.6); border: 2px solid var(--btn-border); color: #fff; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 140px; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: -40px; }
+        .header-title { font-size: 3.5em; margin: 0 0 15px 0; text-shadow: 0 0 20px var(--electric-blue); font-weight: 900; }
+        #PS4FW { background: rgba(0,0,0,0.5); padding: 8px 30px; border-radius: 25px; font-size: 18px; border: 1px solid var(--btn-border); direction: ltr; margin-bottom: 40px; }
+        .ps-btn { width: 170px; height: 170px; border-radius: 50%; background: #04101f; border: 4px solid var(--electric-blue); cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 173, 239, 0.2); }
         .ps-btn svg { width: 80px; fill: var(--electric-blue); }
-
-        /* النوافذ المنبثقة */
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; }
-        .popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #061121; padding: 30px; border-radius: 12px; border: 2px solid var(--electric-blue); z-index: 1100; width: 80%; max-width: 450px; text-align: center; font-size: 18px; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
-        .popup h3 { margin-top: 0; font-size: 28px; color: var(--electric-blue); }
-        
-        #DebugConsole { display: none; width: 80%; margin: 10px auto; background: #000; padding: 10px; border: 1px solid #333; font-family: monospace; font-size: 14px; color: #0f0; max-height: 150px; overflow-y: auto; }
-        
-        footer { position: absolute; bottom: 0; width: 100%; background: rgba(2, 8, 19, 0.95); border-top: 2px solid var(--electric-blue); text-align: center; padding: 12px 0; font-size: 15px; line-height: 1.6; font-weight: bold; }
-        footer span { color: var(--electric-blue); }
+        .popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #061121; padding: 30px; border-radius: 12px; border: 2px solid var(--electric-blue); z-index: 1100; width: 80%; max-width: 450px; text-align: center; }
+        footer { position: absolute; bottom: 0; width: 100%; background: rgba(2, 8, 19, 0.95); border-top: 2px solid var(--electric-blue); text-align: center; padding: 12px 0; font-size: 15px; }
     </style>
 </head>
 <body>
     <div id="cache-status"><div id="cache-text"></div><div id="cache-bar"></div></div>
     
-    <div class="bg-logo-watermark">BS</div>
-
     <div class="floating-menu">
-        <button class="menu-btn" id="generate-cache-btn" onclick="location.reload()">تحديث المتجر</button>
+        <button class="menu-btn" onclick="location.reload()">تحديث المتجر</button>
         <button onclick="showsettings()" class="menu-btn">الإعدادات</button>
         <button onclick="showabout()" class="menu-btn">حول</button>
     </div>
 
     <div class="main-content">
-        <h1 class="header-title" id="header-title">بليغ ستور 2 - Baleegh Store</h1>
+        <h1 class="header-title">بليغ ستور 2 - Baleegh Store</h1>
         <div id="PS4FW">Checking FW...</div>
-
-        <div id="jailbreak-page">
-            <button id="jailbreak" class="ps-btn">
-                <svg viewBox="0 0 32 32"><path d="M0.69116 21.9548C-0.506476 22.7935 -0.284724 24.2384 2.44769 25.1419C5.18011 26.0455 8.35603 26.2323 11.1505 25.729V22.8774L8.43588 23.8C7.39792 24.1355 6.35997 24.2194 5.32202 23.9677C4.5236 23.7161 4.68328 23.2129 5.64139 22.7935L11.1505 20.7806V17.6774L3.48565 20.4452C2.52754 20.7806 1.56943 21.2839 0.69116 21.9548ZM19.2146 9.37419V17.5097C22.4881 19.1871 25.0431 17.5097 25.0431 13.1484C25.0431 8.70323 23.5261 6.69032 19.1348 5.09677C16.8193 4.25806 14.4241 3.50323 12.0288 3V27.2387L17.6178 29V8.61935C17.6178 7.69677 17.6178 7.02581 18.2565 7.27742C19.1348 7.52903 19.2146 8.45161 19.2146 9.37419ZM29.5941 20.0258C27.2787 19.1871 24.8036 18.8516 22.4083 19.1032C21.0779 19.1906 19.8294 19.5869 18.5759 20.0258V23.2968L23.7656 21.2839C24.8036 20.9484 25.8415 20.8645 26.8795 21.1161C27.6779 21.3677 27.5182 21.871 26.5601 22.2903L18.5759 25.3935V28.5806L29.5941 24.3032C30.3925 23.9677 31.1111 23.5484 31.7499 22.8774C32.3088 22.0387 32.0692 20.8645 29.5941 20.0258Z"></path></svg>
-            </button>
-        </div>
+        <button id="jailbreak" class="ps-btn" onclick="startJailbreak()">
+            <svg viewBox="0 0 32 32"><path d="M0.69116 21.9548C-0.506476 22.7935 -0.284724 24.2384 2.44769 25.1419C5.18011 26.0455 8.35603 26.2323 11.1505 25.729V22.8774L8.43588 23.8C7.39792 24.1355 6.35997 24.2194 5.32202 23.9677C4.5236 23.7161 4.68328 23.2129 5.64139 22.7935L11.1505 20.7806V17.6774L3.48565 20.4452C2.52754 20.7806 1.56943 21.2839 0.69116 21.9548ZM19.2146 9.37419V17.5097C22.4881 19.1871 25.0431 17.5097 25.0431 13.1484C25.0431 8.70323 23.5261 6.69032 19.1348 5.09677C16.8193 4.25806 14.4241 3.50323 12.0288 3V27.2387L17.6178 29V8.61935C17.6178 7.69677 17.6178 7.02581 18.2565 7.27742C19.1348 7.52903 19.2146 8.45161 19.2146 9.37419ZM29.5941 20.0258C27.2787 19.1871 24.8036 18.8516 22.4083 19.1032C21.0779 19.1906 19.8294 19.5869 18.5759 20.0258V23.2968L23.7656 21.2839C24.8036 20.9484 25.8415 20.8645 26.8795 21.1161C27.6779 21.3677 27.5182 21.871 26.5601 22.2903L18.5759 25.3935V28.5806L29.5941 24.3032C30.3925 23.9677 31.1111 23.5484 31.7499 22.8774C32.3088 22.0387 32.0692 20.8645 29.5941 20.0258Z"></path></svg>
+        </button>
     </div>
-
-    <div id="DebugConsole"><pre id="console"></pre></div>
 
     <div class="overlay" id="overlay-popup" onclick="closeAll()"></div>
-    
     <div class="popup" id="settings-popup">
         <h3>الإعدادات</h3>
-        <div style="text-align: right; display: inline-block; direction: ltr;">
-            <label><input type="radio" name="hen" value="GoldHEN" onchange="choosejb('GoldHEN')"> GoldHEN</label><br><br>
-            <label><input type="radio" name="hen" value="HEN" onchange="choosejb('HEN')"> HEN</label><br><br>
-            <hr style="border-color: #1fa9dc;"><br>
-            <label><input type="checkbox" id="ckbaj"> Auto-Jailbreak</label><br><br>
-            <label><input type="checkbox" id="ckbdc"> Debug Console</label>
-        </div>
+        <label><input type="radio" name="hen" id="goldhen_radio" checked> GoldHEN</label><br><br>
+        <label><input type="radio" name="hen" id="hen_radio"> HEN</label>
     </div>
-
     <div class="popup" id="about-popup">
         <h3>بليغ ستور 2</h3>
-        <p> (Lite)</p>
-        <p style="color: var(--electric-blue); font-weight: bold;">تصميم  AlawiM7</p>
-        <button class="menu-btn" onclick="closeAll()" style="margin-top: 15px;">إغلاق</button>
+        <p style="color: #00adef; font-weight: bold;">تصميم المهندس AlawiM7</p>
+        <button class="menu-btn" onclick="closeAll()">إغلاق</button>
     </div>
 
     <footer>
-        صنعاء - الخمسين - بيت بوس - خلف كافتيريا ركن الأحلام - جوار سوبر ماركت الصخرة <br>
-        <span>تصميم  AlawiM7</span>
+        بليغ ستور - اليمن - صنعاء - شارع الخمسين <br>
+        <span style="color: #00adef;">تصميم المهندس AlawiM7</span>
     </footer>
 
-    <script src="./js/index.js"></script>
+    <script src="./psfree/psfree.mjs" type="module"></script>
+    <script>
+        // التحقق من النظام
+        function checkFW() {
+            var ua = navigator.userAgent;
+            var ps4 = ua.match(/PlayStation 4\/(\d+\.\d+)/);
+            if (ps4) {
+                document.getElementById('PS4FW').innerHTML = "PS4 FW: " + ps4[1] + " | Compatible";
+            } else {
+                document.getElementById('PS4FW').innerHTML = "PC Mode / Unsupported";
+            }
+        }
+        window.onload = checkFW;
+
+        function showsettings() { document.getElementById('settings-popup').style.display='block'; document.getElementById('overlay-popup').style.display='block'; }
+        function showabout() { document.getElementById('about-popup').style.display='block'; document.getElementById('overlay-popup').style.display='block'; }
+        function closeAll() { document.querySelectorAll('.popup, .overlay').forEach(el => el.style.display = 'none'); }
+
+        async function startJailbreak() {
+            // تحديد مسار البايلود
+            var payload = document.getElementById('hen_radio').checked ? "./payloads/HEN/HEN.bin" : "./payloads/GoldHEN/GoldHEN.bin";
+            window.payload_path = payload;
+            
+            try {
+                // تشغيل الثغرة مباشرة من المودول المرفوع
+                import('./psfree/alert.mjs');
+            } catch(e) {
+                alert("خطأ في تشغيل الثغرة: " + e);
+            }
+        }
+
+        // كود الكاش
+        window.applicationCache.onprogress = function(e){
+            if(e.total > 0){
+                var p = Math.round(e.loaded / e.total * 100);
+                document.getElementById('cache-status').style.display = 'block';
+                document.getElementById('cache-text').innerHTML = "جاري الحفظ للاوفلاين: " + p + "%";
+                document.getElementById('cache-bar').style.width = p + '%';
+            }
+        };
+        window.applicationCache.oncached = window.applicationCache.onupdateready = function(){
+            document.getElementById('cache-text').innerHTML = "تم الحفظ بنجاح! افصل الإنترنت.";
+            setTimeout(function(){ document.getElementById('cache-status').style.display = 'none'; }, 3000);
+        };
+    </script>
 </body>
 </html>
