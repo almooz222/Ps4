@@ -10,6 +10,7 @@ window.addEventListener('DOMContentLoaded', () => {
     checksettings();
 });
 
+// ربط زر البلايستيشن بوظيفة الجيلبريك
 document.getElementById('jailbreak').addEventListener('click', jailbreak);
 
 function CheckFW() {
@@ -31,10 +32,15 @@ function CheckFW() {
 function checksettings() {
     const isHen = localStorage.getItem('HEN');
     const color = isHen ? '#FFB84D' : '#00adef';
-    document.getElementById('header-title').style.textShadow = `0 0 15px ${color}`;
-    document.querySelectorAll('.menu-btn, .button-container button').forEach(btn => {
+    const title = document.getElementById('header-title');
+    if(title) title.style.textShadow = `0 0 15px ${color}`;
+    
+    document.querySelectorAll('.menu-btn').forEach(btn => {
         btn.style.borderColor = color;
     });
+    
+    const psBtn = document.querySelector('.ps-btn');
+    if(psBtn) psBtn.style.borderColor = color;
 }
 
 function choosejb(hen) {
@@ -53,41 +59,67 @@ async function jailbreak() {
         alert("الجهاز مهكر بالفعل!");
         return;
     }
+    
     log("جاري البدء... يرجى الانتظار.");
+    
     try {
-        const modules = await Promise.all([
-            import('../payloads/Jailbreak.js'),
-            import('../psfree/alert.mjs')
-        ]);
-        const JailbreakModule = modules[0];
-        if (localStorage.getItem('HEN')) JailbreakModule.HEN();
-        else JailbreakModule.GoldHEN();
-    } catch (e) { log("خطأ في التحميل: " + e); }
+        // 1. استدعاء ملف تحديد المسارات أولاً (تم إصلاح المسار ليكون ./)
+        const JailbreakModule = await import('./payloads/Jailbreak.js');
+        
+        // 2. تحديد نوع التهكير بناءً على اختيارك
+        if (localStorage.getItem('HEN')) {
+            JailbreakModule.HEN();
+        } else {
+            JailbreakModule.GoldHEN();
+        }
+        
+        // 3. تشغيل الثغرة الفعلية بعد تحديد المسار
+        await import('./psfree/alert.mjs');
+        
+    } catch (e) { 
+        log("خطأ في التحميل: " + e);
+        alert("حدث خطأ! تأكد من وجود ملفات الجيلبريك في مساراتها الصحيحة.");
+    }
 }
 
 function log(msg) {
-    consoleDev.textContent += msg + "\n";
-    consoleDev.scrollTop = consoleDev.scrollHeight;
+    if(consoleDev) {
+        consoleDev.textContent += msg + "\n";
+        consoleDev.scrollTop = consoleDev.scrollHeight;
+    }
 }
 
-function showsettings() { document.getElementById('settings-popup').style.display = 'block'; document.getElementById('overlay-popup').style.display = 'block'; }
-function showabout() { document.getElementById('about-popup').style.display = 'block'; document.getElementById('overlay-popup').style.display = 'block'; }
-function closeAll() { document.querySelectorAll('.popup, .overlay').forEach(el => el.style.display = 'none'); }
+function showsettings() { 
+    document.getElementById('settings-popup').style.display = 'block'; 
+    document.getElementById('overlay-popup').style.display = 'block'; 
+}
+
+function showabout() { 
+    document.getElementById('about-popup').style.display = 'block'; 
+    document.getElementById('overlay-popup').style.display = 'block'; 
+}
+
+function closeAll() { 
+    document.querySelectorAll('.popup, .overlay').forEach(el => el.style.display = 'none'); 
+}
 
 function loadjbflavor() {
-    const saved = localStorage.getItem('selectedHEN');
-    if (saved) {
-        const el = document.querySelector(`input[value="${saved}"]`);
+    const savedHen = localStorage.getItem('HEN');
+    const savedGold = localStorage.getItem('GoldHEN');
+    
+    if (savedHen) {
+        const el = document.querySelector('input[value="HEN"]');
         if(el) el.checked = true;
+    } else if (savedGold) {
+        const el = document.querySelector('input[value="GoldHEN"]');
+        if(el) el.checked = true;
+    } else {
+        // تعيين GoldHEN كافتراضي إذا لم يختر المستخدم شيئاً
+        const el = document.querySelector('input[value="GoldHEN"]');
+        if(el) el.checked = true;
+        localStorage.setItem('GoldHEN', '1');
     }
 }
 
 function loadajbsettings() {
-    ckbaj.checked = localStorage.getItem('autojbstate') === 'true';
-    ckbdc.checked = localStorage.getItem('dbugc') === 'true';
-    if (ckbdc.checked) document.getElementById('DebugConsole').style.display = 'block';
-    
-    if (ckbaj.checked && !sessionStorage.getItem('jbsuccess')) {
-        setTimeout(jailbreak, 3000);
-    }
-}
+    if
