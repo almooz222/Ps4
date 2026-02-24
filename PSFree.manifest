@@ -1,6 +1,6 @@
-CACHE MANIFEST 
+CACHE MANIFEST
 # Baleegh Store 2 - Lite Core Edition
-# # v3.0.3 - 2026-02-22
+# v3.0.4 - 2026-02-25
 
 CACHE:
 index.html
@@ -9,7 +9,7 @@ payloads/Jailbreak.js
 payloads/GoldHEN/GoldHEN.bin
 payloads/HEN/HEN.bin
 
-# PSFree Core Modules
+# PSFree Core Modules & Assets
 psfree/alert.mjs
 psfree/config.mjs
 psfree/lapse.mjs
