@@ -5,92 +5,48 @@
     <title>بليغ ستور 2 - Baleegh Store</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    
     <style>
         :root { --dark-navy: #020813; --electric-blue: #00adef; --btn-border: #1fa9dc; }
-        body { 
-            background: radial-gradient(circle at center, #09162a 0%, var(--dark-navy) 100%); 
-            width: 100vw; height: 100vh; color: #fff; margin: 0; padding: 0;
-            font-family: 'Cairo', sans-serif; overflow: hidden;
-            display: flex; flex-direction: column;
-        }
-        #cache-status { display: none; position: fixed; top: 0; width: 100%; background: #000; z-index: 10000; text-align: center; padding: 10px 0; border-bottom: 2px solid var(--electric-blue); font-size: 18px; }
+        body { background: radial-gradient(circle at center, #09162a 0%, var(--dark-navy) 100%); width: 100vw; height: 100vh; color: #fff; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; overflow: hidden; display: flex; flex-direction: column; }
+        #cache-status { position: fixed; top: 0; width: 100%; background: #000; z-index: 10000; text-align: center; padding: 10px 0; border-bottom: 2px solid var(--electric-blue); font-size: 18px; display: none; }
         #cache-bar { height: 4px; background: var(--electric-blue); width: 0%; transition: width 0.2s; position: absolute; bottom: 0; }
-        .floating-menu { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); z-index: 100; display: flex; flex-direction: column; gap: 18px; transition: opacity 0.3s; }
-        .menu-btn { background: rgba(0,0,0,0.6); border: 2px solid var(--btn-border); color: #fff; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 140px; text-align: center; }
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: -40px; }
-        .header-title { font-size: 3.5em; margin: 0 0 15px 0; text-shadow: 0 0 20px var(--electric-blue); font-weight: 900; }
-        #PS4FW { background: rgba(0,0,0,0.5); padding: 8px 30px; border-radius: 25px; font-size: 18px; border: 1px solid var(--btn-border); direction: ltr; margin-bottom: 40px; }
-        .ps-btn { width: 170px; height: 170px; border-radius: 50%; background: #04101f; border: 4px solid var(--electric-blue); cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 173, 239, 0.2); transition: transform 0.2s; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .header-title { font-size: 3.5em; margin: 0; text-shadow: 0 0 20px var(--electric-blue); font-weight: 900; }
+        #PS4FW { background: rgba(0,0,0,0.5); padding: 8px 30px; border-radius: 25px; font-size: 18px; border: 1px solid var(--btn-border); direction: ltr; margin: 20px 0; }
+        .ps-btn { width: 170px; height: 170px; border-radius: 50%; background: #04101f; border: 4px solid var(--electric-blue); cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 173, 239, 0.2); }
         .ps-btn svg { width: 80px; fill: var(--electric-blue); }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; }
-        .popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #061121; padding: 30px; border-radius: 12px; border: 2px solid var(--electric-blue); z-index: 1100; width: 80%; max-width: 450px; text-align: center; }
-        footer { position: absolute; bottom: 0; width: 100%; background: rgba(2, 8, 19, 0.95); border-top: 2px solid var(--electric-blue); text-align: center; padding: 12px 0; font-size: 15px; transition: opacity 0.3s; }
+        footer { position: absolute; bottom: 0; width: 100%; background: rgba(2, 8, 19, 0.95); border-top: 2px solid var(--electric-blue); text-align: center; padding: 12px 0; font-size: 15px; }
     </style>
 </head>
 <body>
-    <div id="cache-status"><div id="cache-text"></div><div id="cache-bar"></div></div>
-    
-    <div class="floating-menu" id="side-menu">
-        <button class="menu-btn" onclick="location.reload()">تحديث المتجر</button>
-        <button onclick="showsettings()" class="menu-btn">الإعدادات</button>
-        <button onclick="showabout()" class="menu-btn">حول</button>
-    </div>
+    <div id="cache-status"><div id="cache-text">جاري التحميل...</div><div id="cache-bar"></div></div>
 
     <div class="main-content">
         <h1 class="header-title">بليغ ستور 2</h1>
-        <div id="PS4FW">جاري فحص الجهاز...</div>
+        <h2 id="PS4FW">PS4 FW: Checking...</h2>
         
-        <button id="jailbreak-btn" class="ps-btn">
+        <button id="jailbreak" class="ps-btn">
             <svg viewBox="0 0 32 32"><path d="M0.69116 21.9548C-0.506476 22.7935 -0.284724 24.2384 2.44769 25.1419C5.18011 26.0455 8.35603 26.2323 11.1505 25.729V22.8774L8.43588 23.8C7.39792 24.1355 6.35997 24.2194 5.32202 23.9677C4.5236 23.7161 4.68328 23.2129 5.64139 22.7935L11.1505 20.7806V17.6774L3.48565 20.4452C2.52754 20.7806 1.56943 21.2839 0.69116 21.9548ZM19.2146 9.37419V17.5097C22.4881 19.1871 25.0431 17.5097 25.0431 13.1484C25.0431 8.70323 23.5261 6.69032 19.1348 5.09677C16.8193 4.25806 14.4241 3.50323 12.0288 3V27.2387L17.6178 29V8.61935C17.6178 7.69677 17.6178 7.02581 18.2565 7.27742C19.1348 7.52903 19.2146 8.45161 19.2146 9.37419ZM29.5941 20.0258C27.2787 19.1871 24.8036 18.8516 22.4083 19.1032C21.0779 19.1906 19.8294 19.5869 18.5759 20.0258V23.2968L23.7656 21.2839C24.8036 20.9484 25.8415 20.8645 26.8795 21.1161C27.6779 21.3677 27.5182 21.871 26.5601 22.2903L18.5759 25.3935V28.5806L29.5941 24.3032C30.3925 23.9677 31.1111 23.5484 31.7499 22.8774C32.3088 22.0387 32.0692 20.8645 29.5941 20.0258Z"></path></svg>
         </button>
+
+        <pre id="console" style="display:none"></pre>
     </div>
 
-    <pre id="console" style="display:none"></pre>
-
-    <div class="overlay" id="overlay-popup" onclick="closeAll()"></div>
-    <div class="popup" id="settings-popup">
-        <h3>الإعدادات</h3>
-        <label><input type="radio" name="hen" id="goldhen_radio" value="GoldHEN" checked> GoldHEN</label><br><br>
-        <label><input type="radio" name="hen" id="hen_radio" value="HEN"> HEN</label>
-    </div>
-    <div class="popup" id="about-popup">
-        <h3>بليغ ستور 2</h3>
-        <p>تصميم المهندس AlawiM7</p>
-        <button class="menu-btn" onclick="closeAll()" style="width: 100%;">إغلاق</button>
-    </div>
-
-    <footer id="footer">
-        بليغ ستور - اليمن - صنعاء <br>
-        <span style="color: #00adef;">المهندس AlawiM7</span>
-    </footer>
+    <footer>بليغ ستور - صنعاء - المهندس AlawiM7</footer>
 
     <script src="./js/index.js"></script>
 
     <script>
-        // دالة لعرض تقدم الكاش في واجهتك الجميلة
-        if (window.applicationCache) {
-            window.applicationCache.onprogress = function(e){
-                var p = Math.round(e.loaded / e.total * 100);
-                document.getElementById('cache-status').style.display = 'block';
-                document.getElementById('cache-text').innerHTML = "جاري الحفظ: " + p + "%";
-                document.getElementById('cache-bar').style.width = p + '%';
-            };
-            window.applicationCache.oncached = window.applicationCache.onupdateready = function(){
-                document.getElementById('cache-text').innerHTML = "تم الحفظ! افصل الإنترنت وأعد الدخول.";
-                setTimeout(function(){ document.getElementById('cache-status').style.display = 'none'; }, 5000);
-            };
-        }
-
-        function showsettings() { document.getElementById('settings-popup').style.display='block'; document.getElementById('overlay-popup').style.display='block'; }
-        function showabout() { document.getElementById('about-popup').style.display='block'; document.getElementById('overlay-popup').style.display='block'; }
-        function closeAll() { document.querySelectorAll('.popup, .overlay').forEach(el => el.style.display = 'none'); }
-
-        // ربط زر الجيلبريك بملف run.html الجديد
-        document.getElementById('jailbreak-btn').onclick = function() {
-            var isHen = document.getElementById('hen_radio').checked;
-            localStorage.setItem('selected_payload', isHen ? "HEN" : "GoldHEN");
-            window.location.href = "run.html";
+        // كود الكاش الأصلي لضمان عدم التوقف عند 44%
+        window.applicationCache.onprogress = function(e) {
+            var p = Math.round(e.loaded / e.total * 100);
+            document.getElementById('cache-status').style.display = 'block';
+            document.getElementById('cache-text').innerHTML = "Installing offline cache: " + p + "%";
+            document.getElementById('cache-bar').style.width = p + '%';
+        };
+        window.applicationCache.oncached = window.applicationCache.onupdateready = function() {
+            document.getElementById('cache-text').innerHTML = "Cache Success! Restart Browser.";
+            setTimeout(function(){ document.getElementById('cache-status').style.display = 'none'; }, 3000);
         };
     </script>
 </body>
