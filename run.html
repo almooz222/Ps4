@@ -5,16 +5,16 @@
     <title>Jailbreak Running...</title>
     <style>
         body { background-color: #020813; color: #00adef; text-align: center; padding-top: 20%; font-family: sans-serif; }
-        h1 { font-size: 2.5em; text-shadow: 0 0 10px #00adef; }
     </style>
 </head>
 <body>
-    <h1>جاري تفعيل الثغرة... يرجى الانتظار</h1>
-    
-    <div id="console" style="display: none;"></div>
+    <h1 id="status">جاري تشغيل الثغرة...</h1>
+    <div id="console" style="display:none"></div>
 
     <script>
-        window.payload_path = sessionStorage.getItem('selected_payload') || "./payloads/GoldHEN/GoldHEN.bin";
+        // سحب نوع البايلود المختار
+        var flavor = localStorage.getItem('selected_payload') || "GoldHEN";
+        window.payload_path = "./payloads/" + flavor + "/" + flavor + ".bin";
     </script>
 
     <script type="module" src="./psfree/alert.mjs"></script>
