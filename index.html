@@ -16,22 +16,23 @@
         }
         #cache-status { display: none; position: fixed; top: 0; width: 100%; background: #000; z-index: 10000; text-align: center; padding: 10px 0; border-bottom: 2px solid var(--electric-blue); font-size: 18px; }
         #cache-bar { height: 4px; background: var(--electric-blue); width: 0%; transition: width 0.2s; position: absolute; bottom: 0; }
-        .floating-menu { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); z-index: 100; display: flex; flex-direction: column; gap: 18px; }
+        .floating-menu { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); z-index: 100; display: flex; flex-direction: column; gap: 18px; transition: opacity 0.3s; }
         .menu-btn { background: rgba(0,0,0,0.6); border: 2px solid var(--btn-border); color: #fff; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 140px; text-align: center; }
         .main-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: -40px; }
         .header-title { font-size: 3.5em; margin: 0 0 15px 0; text-shadow: 0 0 20px var(--electric-blue); font-weight: 900; }
         #PS4FW { background: rgba(0,0,0,0.5); padding: 8px 30px; border-radius: 25px; font-size: 18px; border: 1px solid var(--btn-border); direction: ltr; margin-bottom: 40px; }
-        .ps-btn { width: 170px; height: 170px; border-radius: 50%; background: #04101f; border: 4px solid var(--electric-blue); cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 173, 239, 0.2); }
+        .ps-btn { width: 170px; height: 170px; border-radius: 50%; background: #04101f; border: 4px solid var(--electric-blue); cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 173, 239, 0.2); transition: transform 0.2s; }
+        .ps-btn:active { transform: scale(0.95); }
         .ps-btn svg { width: 80px; fill: var(--electric-blue); }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; }
         .popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #061121; padding: 30px; border-radius: 12px; border: 2px solid var(--electric-blue); z-index: 1100; width: 80%; max-width: 450px; text-align: center; }
-        footer { position: absolute; bottom: 0; width: 100%; background: rgba(2, 8, 19, 0.95); border-top: 2px solid var(--electric-blue); text-align: center; padding: 12px 0; font-size: 15px; }
+        footer { position: absolute; bottom: 0; width: 100%; background: rgba(2, 8, 19, 0.95); border-top: 2px solid var(--electric-blue); text-align: center; padding: 12px 0; font-size: 15px; transition: opacity 0.3s; }
     </style>
 </head>
 <body>
     <div id="cache-status"><div id="cache-text"></div><div id="cache-bar"></div></div>
     
-    <div class="floating-menu">
+    <div class="floating-menu" id="side-menu">
         <button class="menu-btn" onclick="location.reload()">تحديث المتجر</button>
         <button onclick="showsettings()" class="menu-btn">الإعدادات</button>
         <button onclick="showabout()" class="menu-btn">حول</button>
@@ -60,7 +61,7 @@
         <button class="menu-btn" onclick="closeAll()" style="width: 100%;">إغلاق</button>
     </div>
 
-    <footer>
+    <footer id="footer">
         بليغ ستور - اليمن - صنعاء - شارع الخمسين <br>
         <span style="color: #00adef;">تصميم المهندس AlawiM7</span>
     </footer>
@@ -81,13 +82,27 @@
         function closeAll() { document.querySelectorAll('.popup, .overlay').forEach(el => el.style.display = 'none'); }
 
         document.getElementById('jailbreak-btn').onclick = function() {
+            // 1. تغيير النص ليعرف المستخدم أن العملية بدأت
+            var fwStatus = document.getElementById('PS4FW');
+            fwStatus.innerHTML = "جاري تفعيل الثغرة... يرجى الانتظار";
+            fwStatus.style.color = "#FFB84D";
+            
+            // 2. إخفاء القوائم الجانبية والفوتر لتوفير ذاكرة المتصفح (يمنع خطأ مساحة النظام)
+            document.getElementById('side-menu').style.opacity = '0';
+            document.getElementById('footer').style.opacity = '0';
+            this.style.pointerEvents = 'none'; // منع الضغط المتكرر
+
+            // 3. تحديد البايلود
             var isHen = document.getElementById('hen_radio').checked;
             window.payload_path = isHen ? "./payloads/HEN/HEN.bin" : "./payloads/GoldHEN/GoldHEN.bin";
             
-            var script = document.createElement('script');
-            script.src = "./psfree/alert.mjs"; 
-            script.type = "module"; 
-            document.body.appendChild(script);
+            // 4. تأخير لمدة ثانية واحدة لكي تستقر الذاكرة قبل تشغيل الثغرة
+            setTimeout(function() {
+                var script = document.createElement('script');
+                script.src = "./psfree/alert.mjs"; 
+                script.type = "module"; 
+                document.body.appendChild(script);
+            }, 1000);
         };
 
         if (window.applicationCache) {
