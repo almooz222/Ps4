@@ -47,8 +47,6 @@
         </button>
     </div>
 
-    <div id="console" style="display: none;"></div>
-
     <div class="overlay" id="overlay-popup" onclick="closeAll()"></div>
     <div class="popup" id="settings-popup">
         <h3>الإعدادات</h3>
@@ -82,27 +80,17 @@
         function closeAll() { document.querySelectorAll('.popup, .overlay').forEach(el => el.style.display = 'none'); }
 
         document.getElementById('jailbreak-btn').onclick = function() {
-            // 1. تغيير النص ليعرف المستخدم أن العملية بدأت
             var fwStatus = document.getElementById('PS4FW');
-            fwStatus.innerHTML = "جاري تفعيل الثغرة... يرجى الانتظار";
+            fwStatus.innerHTML = "جاري الانتقال لصفحة التفعيل...";
             fwStatus.style.color = "#FFB84D";
             
-            // 2. إخفاء القوائم الجانبية والفوتر لتوفير ذاكرة المتصفح (يمنع خطأ مساحة النظام)
-            document.getElementById('side-menu').style.opacity = '0';
-            document.getElementById('footer').style.opacity = '0';
-            this.style.pointerEvents = 'none'; // منع الضغط المتكرر
-
-            // 3. تحديد البايلود
             var isHen = document.getElementById('hen_radio').checked;
-            window.payload_path = isHen ? "./payloads/HEN/HEN.bin" : "./payloads/GoldHEN/GoldHEN.bin";
+            var payload = isHen ? "./payloads/HEN/HEN.bin" : "./payloads/GoldHEN/GoldHEN.bin";
+            sessionStorage.setItem('selected_payload', payload);
             
-            // 4. تأخير لمدة ثانية واحدة لكي تستقر الذاكرة قبل تشغيل الثغرة
             setTimeout(function() {
-                var script = document.createElement('script');
-                script.src = "./psfree/alert.mjs"; 
-                script.type = "module"; 
-                document.body.appendChild(script);
-            }, 1000);
+                window.location.href = "run.html";
+            }, 500);
         };
 
         if (window.applicationCache) {
