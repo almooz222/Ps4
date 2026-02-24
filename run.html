@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html manifest="./PSFree.manifest">
+<head>
+    <meta charset="UTF-8">
+    <title>Jailbreak Running...</title>
+    <style>
+        body { background-color: #020813; color: #00adef; text-align: center; padding-top: 20%; font-family: sans-serif; }
+        h1 { font-size: 2.5em; text-shadow: 0 0 10px #00adef; }
+    </style>
+</head>
+<body>
+    <h1>جاري تفعيل الثغرة... يرجى الانتظار</h1>
+    
+    <div id="console" style="display: none;"></div>
+
+    <script>
+        // سحب مسار البايلود الذي اختاره المستخدم من الصفحة الرئيسية
+        window.payload_path = sessionStorage.getItem('selected_payload') || "./payloads/GoldHEN/GoldHEN.bin";
+    </script>
+
+    <script type="module" src="./psfree/alert.mjs"></script>
+</body>
+</html>
