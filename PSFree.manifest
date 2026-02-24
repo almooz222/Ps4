@@ -1,6 +1,6 @@
 CACHE MANIFEST 
-# Baleegh Store 2 - Ultimate Fix
-# v3.0.6 - 2026-02-25
+# Baleegh Store 2 - Fixed Manifest
+# v3.0.7
 
 CACHE:
 index.html
@@ -9,27 +9,17 @@ js/index.js
 payloads/GoldHEN/GoldHEN.bin
 payloads/HEN/HEN.bin
 
-# PSFree Core Modules
+# PSFree Core (تأكد من وجود هذه الملفات في مجلد psfree)
 psfree/alert.mjs
 psfree/config.mjs
 psfree/lapse.mjs
 psfree/psfree.mjs
 psfree/send.mjs
-psfree/exploit.mjs
-psfree/malloc.mjs
-psfree/rop.mjs
-psfree/syscalls.mjs
 
-# PSFree Kernel Patches
-psfree/kpatch/700.bin
-psfree/kpatch/750.bin
-psfree/kpatch/800.bin
-psfree/kpatch/850.bin
+# Kernel Patches
 psfree/kpatch/900.bin
-psfree/kpatch/903.bin
-psfree/kpatch/950.bin
 
-# PSFree Modules
+# Modules (المجلدات الفرعية)
 psfree/module/chain.mjs
 psfree/module/int64.mjs
 psfree/module/mem.mjs
@@ -39,13 +29,8 @@ psfree/module/rw.mjs
 psfree/module/utils.mjs
 psfree/module/view.mjs
 
-# PSFree ROP Chains
-psfree/rop/ps4/700.mjs
-psfree/rop/ps4/750.mjs
-psfree/rop/ps4/800.mjs
-psfree/rop/ps4/850.mjs
+# ROP
 psfree/rop/ps4/900.mjs
-psfree/rop/ps4/950.mjs
 
 NETWORK:
 *
