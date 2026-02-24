@@ -1,25 +1,28 @@
 CACHE MANIFEST 
-# Baleegh Store 2 - Fixed Manifest
-# v3.0.7
+# Baleegh Store 2 - Stable
+# v3.1.0
 
 CACHE:
 index.html
-run.html
 js/index.js
 payloads/GoldHEN/GoldHEN.bin
 payloads/HEN/HEN.bin
 
-# PSFree Core (تأكد من وجود هذه الملفات في مجلد psfree)
+# Core
 psfree/alert.mjs
 psfree/config.mjs
 psfree/lapse.mjs
 psfree/psfree.mjs
 psfree/send.mjs
+psfree/exploit.mjs
+psfree/malloc.mjs
+psfree/rop.mjs
+psfree/syscalls.mjs
 
-# Kernel Patches
+# Kernel
 psfree/kpatch/900.bin
 
-# Modules (المجلدات الفرعية)
+# Modules
 psfree/module/chain.mjs
 psfree/module/int64.mjs
 psfree/module/mem.mjs
