@@ -22,7 +22,6 @@
         .header-title { font-size: 3.5em; margin: 0 0 15px 0; text-shadow: 0 0 20px var(--electric-blue); font-weight: 900; }
         #PS4FW { background: rgba(0,0,0,0.5); padding: 8px 30px; border-radius: 25px; font-size: 18px; border: 1px solid var(--btn-border); direction: ltr; margin-bottom: 40px; }
         .ps-btn { width: 170px; height: 170px; border-radius: 50%; background: #04101f; border: 4px solid var(--electric-blue); cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 173, 239, 0.2); transition: transform 0.2s; }
-        .ps-btn:active { transform: scale(0.95); }
         .ps-btn svg { width: 80px; fill: var(--electric-blue); }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; }
         .popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #061121; padding: 30px; border-radius: 12px; border: 2px solid var(--electric-blue); z-index: 1100; width: 80%; max-width: 450px; text-align: center; }
@@ -39,76 +38,60 @@
     </div>
 
     <div class="main-content">
-        <h1 class="header-title">بليغ ستور 2 - Baleegh Store</h1>
-        <div id="PS4FW">Checking FW...</div>
+        <h1 class="header-title">بليغ ستور 2</h1>
+        <div id="PS4FW">جاري فحص الجهاز...</div>
         
         <button id="jailbreak-btn" class="ps-btn">
             <svg viewBox="0 0 32 32"><path d="M0.69116 21.9548C-0.506476 22.7935 -0.284724 24.2384 2.44769 25.1419C5.18011 26.0455 8.35603 26.2323 11.1505 25.729V22.8774L8.43588 23.8C7.39792 24.1355 6.35997 24.2194 5.32202 23.9677C4.5236 23.7161 4.68328 23.2129 5.64139 22.7935L11.1505 20.7806V17.6774L3.48565 20.4452C2.52754 20.7806 1.56943 21.2839 0.69116 21.9548ZM19.2146 9.37419V17.5097C22.4881 19.1871 25.0431 17.5097 25.0431 13.1484C25.0431 8.70323 23.5261 6.69032 19.1348 5.09677C16.8193 4.25806 14.4241 3.50323 12.0288 3V27.2387L17.6178 29V8.61935C17.6178 7.69677 17.6178 7.02581 18.2565 7.27742C19.1348 7.52903 19.2146 8.45161 19.2146 9.37419ZM29.5941 20.0258C27.2787 19.1871 24.8036 18.8516 22.4083 19.1032C21.0779 19.1906 19.8294 19.5869 18.5759 20.0258V23.2968L23.7656 21.2839C24.8036 20.9484 25.8415 20.8645 26.8795 21.1161C27.6779 21.3677 27.5182 21.871 26.5601 22.2903L18.5759 25.3935V28.5806L29.5941 24.3032C30.3925 23.9677 31.1111 23.5484 31.7499 22.8774C32.3088 22.0387 32.0692 20.8645 29.5941 20.0258Z"></path></svg>
         </button>
     </div>
 
+    <pre id="console" style="display:none"></pre>
+
     <div class="overlay" id="overlay-popup" onclick="closeAll()"></div>
     <div class="popup" id="settings-popup">
         <h3>الإعدادات</h3>
-        <label><input type="radio" name="hen" id="goldhen_radio" checked> GoldHEN</label><br><br>
-        <label><input type="radio" name="hen" id="hen_radio"> HEN</label>
+        <label><input type="radio" name="hen" id="goldhen_radio" value="GoldHEN" checked> GoldHEN</label><br><br>
+        <label><input type="radio" name="hen" id="hen_radio" value="HEN"> HEN</label>
     </div>
     <div class="popup" id="about-popup">
         <h3>بليغ ستور 2</h3>
-        <p style="color: #00adef; font-weight: bold;">تصميم المهندس AlawiM7</p>
+        <p>تصميم المهندس AlawiM7</p>
         <button class="menu-btn" onclick="closeAll()" style="width: 100%;">إغلاق</button>
     </div>
 
     <footer id="footer">
-        بليغ ستور - اليمن - صنعاء - شارع الخمسين <br>
-        <span style="color: #00adef;">تصميم المهندس AlawiM7</span>
+        بليغ ستور - اليمن - صنعاء <br>
+        <span style="color: #00adef;">المهندس AlawiM7</span>
     </footer>
 
+    <script src="./js/index.js"></script>
+
     <script>
-        function checkFW() {
-            var ua = navigator.userAgent;
-            var ps4 = ua.match(/PlayStation 4\/(\d+\.\d+)/);
-            if (ps4) {
-                document.getElementById('PS4FW').innerHTML = "PS4 FW: " + ps4[1] + " | Compatible";
-            } else {
-                document.getElementById('PS4FW').innerHTML = "PC Mode / Unsupported";
-            }
+        // دالة لعرض تقدم الكاش في واجهتك الجميلة
+        if (window.applicationCache) {
+            window.applicationCache.onprogress = function(e){
+                var p = Math.round(e.loaded / e.total * 100);
+                document.getElementById('cache-status').style.display = 'block';
+                document.getElementById('cache-text').innerHTML = "جاري الحفظ: " + p + "%";
+                document.getElementById('cache-bar').style.width = p + '%';
+            };
+            window.applicationCache.oncached = window.applicationCache.onupdateready = function(){
+                document.getElementById('cache-text').innerHTML = "تم الحفظ! افصل الإنترنت وأعد الدخول.";
+                setTimeout(function(){ document.getElementById('cache-status').style.display = 'none'; }, 5000);
+            };
         }
 
         function showsettings() { document.getElementById('settings-popup').style.display='block'; document.getElementById('overlay-popup').style.display='block'; }
         function showabout() { document.getElementById('about-popup').style.display='block'; document.getElementById('overlay-popup').style.display='block'; }
         function closeAll() { document.querySelectorAll('.popup, .overlay').forEach(el => el.style.display = 'none'); }
 
+        // ربط زر الجيلبريك بملف run.html الجديد
         document.getElementById('jailbreak-btn').onclick = function() {
-            var fwStatus = document.getElementById('PS4FW');
-            fwStatus.innerHTML = "جاري الانتقال لصفحة التفعيل...";
-            fwStatus.style.color = "#FFB84D";
-            
             var isHen = document.getElementById('hen_radio').checked;
-            var payload = isHen ? "./payloads/HEN/HEN.bin" : "./payloads/GoldHEN/GoldHEN.bin";
-            sessionStorage.setItem('selected_payload', payload);
-            
-            setTimeout(function() {
-                window.location.href = "run.html";
-            }, 500);
+            localStorage.setItem('selected_payload', isHen ? "HEN" : "GoldHEN");
+            window.location.href = "run.html";
         };
-
-        if (window.applicationCache) {
-            window.applicationCache.onprogress = function(e){
-                if(e.total > 0){
-                    var p = Math.round(e.loaded / e.total * 100);
-                    document.getElementById('cache-status').style.display = 'block';
-                    document.getElementById('cache-text').innerHTML = "جاري الحفظ للاوفلاين: " + p + "%";
-                    document.getElementById('cache-bar').style.width = p + '%';
-                }
-            };
-            window.applicationCache.oncached = window.applicationCache.onupdateready = function(){
-                document.getElementById('cache-text').innerHTML = "تم الحفظ بنجاح! افصل الإنترنت.";
-                setTimeout(function(){ document.getElementById('cache-status').style.display = 'none'; }, 4000);
-            };
-        }
-
-        window.onload = checkFW;
     </script>
 </body>
 </html>
