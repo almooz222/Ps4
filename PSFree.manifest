@@ -1,11 +1,14 @@
 CACHE MANIFEST 
-# v3.1.4- Fix 44 Percent
+# Baleegh Store 2 - Original Core Design
+# v4.0.0
+
+CACHE:
 index.html
 js/index.js
 payloads/GoldHEN/GoldHEN.bin
 payloads/HEN/HEN.bin
 
-# PSFree Core
+# PSFree Core Modules
 psfree/alert.mjs
 psfree/config.mjs
 psfree/lapse.mjs
@@ -16,7 +19,16 @@ psfree/malloc.mjs
 psfree/rop.mjs
 psfree/syscalls.mjs
 
-# Modules
+# PSFree Kernel Patches
+psfree/kpatch/700.bin
+psfree/kpatch/750.bin
+psfree/kpatch/800.bin
+psfree/kpatch/850.bin
+psfree/kpatch/900.bin
+psfree/kpatch/903.bin
+psfree/kpatch/950.bin
+
+# PSFree Modules 
 psfree/module/chain.mjs
 psfree/module/int64.mjs
 psfree/module/mem.mjs
@@ -26,9 +38,13 @@ psfree/module/rw.mjs
 psfree/module/utils.mjs
 psfree/module/view.mjs
 
-# Kernel and ROP (900 Only for stability)
-psfree/kpatch/900.bin
+# PSFree ROP Chains
+psfree/rop/ps4/700.mjs
+psfree/rop/ps4/750.mjs
+psfree/rop/ps4/800.mjs
+psfree/rop/ps4/850.mjs
 psfree/rop/ps4/900.mjs
+psfree/rop/ps4/950.mjs
 
 NETWORK:
 *
