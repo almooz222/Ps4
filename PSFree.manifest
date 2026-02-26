@@ -1,6 +1,5 @@
 CACHE MANIFEST 
-# Baleegh Store 2 - Fixed
-# v4.0.6
+# v4.0.7 - Stable Build
 
 CACHE:
 index.html
@@ -25,32 +24,13 @@ psfree/module/rw.mjs
 psfree/module/utils.mjs
 psfree/module/view.mjs
 
-# PSFree ROP Chains
+# PSFree ROP
 psfree/rop/ps4/700.mjs
 psfree/rop/ps4/750.mjs
 psfree/rop/ps4/800.mjs
 psfree/rop/ps4/850.mjs
 psfree/rop/ps4/900.mjs
 psfree/rop/ps4/950.mjs
-
-# PSFree Kernel Patches (تأكد من وجود هذه الملفات في مجلد kpatch)
-psfree/kpatch/700.bin
-psfree/kpatch/701.bin
-psfree/kpatch/702.bin
-psfree/kpatch/750.bin
-psfree/kpatch/751.bin
-psfree/kpatch/755.bin
-psfree/kpatch/800.bin
-psfree/kpatch/801.bin
-psfree/kpatch/803.bin
-psfree/kpatch/850.bin
-psfree/kpatch/852.bin
-psfree/kpatch/900.bin
-psfree/kpatch/903.bin
-psfree/kpatch/904.bin
-psfree/kpatch/950.bin
-psfree/kpatch/951.bin
-psfree/kpatch/960.bin
 
 NETWORK:
 *
