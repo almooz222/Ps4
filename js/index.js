@@ -1,16 +1,18 @@
-// Baleegh Store 2 - Core Logic Pro Fix
+// Baleegh Store 2 - Pro Edition (Final Stable Build)
 var ps4fw;
 const consoleDev = document.getElementById("console");
 
+// تهيئة الصفحة عند التحميل
 window.addEventListener('DOMContentLoaded', () => {
     CheckFW();
     loadSettings();
     checkVisualTheme();
 });
 
-// ربط الزر
+// ربط زر التهكير
 document.getElementById('jailbreak').addEventListener('click', jailbreak);
 
+// وظيفة فحص إصدار النظام
 function CheckFW() {
     const userAgent = navigator.userAgent;
     const ps4Regex = /PlayStation 4\/(\d+\.\d+)/;
@@ -22,12 +24,13 @@ function CheckFW() {
         fwEl.textContent = "PS4 FW: " + fwVersion + " | Compatible";
         fwEl.style.color = '#00adef';
     } else {
-        ps4fw = "9.00"; // افتراضي للحاسوب
+        ps4fw = "9.00"; // قيمة افتراضية للتجربة على المتصفحات العادية
         fwEl.textContent = "PC Mode / Testing on 9.00";
         fwEl.style.color = 'gray';
     }
 }
 
+// تغيير الألوان بناءً على نوع التهكير (HEN أو GoldHEN)
 function checkVisualTheme() {
     const isHen = localStorage.getItem('HEN');
     const color = isHen ? '#FFB84D' : '#00adef';
@@ -42,6 +45,7 @@ function checkVisualTheme() {
     if(psBtn) psBtn.style.borderColor = color;
 }
 
+// اختيار نوع التهكير من الإعدادات
 function choosejb(hen) {
     if (hen === 'HEN') {
         localStorage.removeItem('GoldHEN');
@@ -53,38 +57,40 @@ function choosejb(hen) {
     checkVisualTheme();
 }
 
+// الوظيفة الأساسية لتشغيل الثغرة
 async function jailbreak() {
     if (sessionStorage.getItem('jbsuccess')) {
-        alert("الجهاز مهكر بالفعل!");
+        alert("الجهاز مهكر بالفعل! أعد تشغيل الجهاز إذا كنت تريد التهكير مجدداً.");
         return;
     }
     
-    // إخفاء الزر وإظهار اللودر
+    // تغيير الواجهة لبدء التحميل
     document.getElementById('jailbreak').style.display = 'none';
     document.getElementById('loader').style.display = 'block';
     
     log("جاري تحضير ثغرة PSFree...");
 
-    // تحديد مسار البيلود الذي سيتم تشغيله بعد الثغرة
+    // تحديد مسار البيلود الذي سيقرأه ملف lapse.mjs لاحقاً
     if (localStorage.getItem('HEN')) {
-        window.payload_path = "./payloads/HEN/HEN.bin";
+        window.payload_path = "payloads/HEN/HEN.bin";
     } else {
-        window.payload_path = "./payloads/GoldHEN/GoldHEN.bin";
+        window.payload_path = "payloads/GoldHEN/GoldHEN.bin";
     }
 
     try {
-        // استدعاء ملف alert.mjs وهو بدوره سيقوم بعمل import لـ psfree.mjs
-        // هذا هو المسار الصحيح للملفات التي أرسلتها لي
+        // استدعاء ملف alert.mjs
+        // بما أن index.js داخل مجلد js، نستخدم ../ للعودة للمجلد الرئيسي
         await import('../psfree/alert.mjs');
-        log("تم تحميل موديلات الثغرة بنجاح.");
+        log("تم استيراد الموديلات بنجاح. انتظر الثغرة...");
     } catch (e) { 
-        log("خطأ في التحميل: " + e);
+        log("خطأ في الاستيراد: " + e);
         document.getElementById('jailbreak').style.display = 'flex';
         document.getElementById('loader').style.display = 'none';
-        alert("تأكد من وجود مجلد psfree والملفات بداخله.");
+        alert("فشل تحميل ملفات الثغرة. تأكد من اكتمال الكاش 100% وحاول مجدداً.");
     }
 }
 
+// وظيفة الكتابة في كونسول الصفحة
 function log(msg) {
     if(consoleDev) {
         consoleDev.textContent += "[+] " + msg + "\n";
@@ -92,7 +98,7 @@ function log(msg) {
     }
 }
 
-// الوظائف المساعدة للنافذة المنبثقة
+// وظائف التحكم في النوافذ المنبثقة
 function showsettings() { 
     document.getElementById('settings-popup').style.display = 'block'; 
     document.getElementById('overlay-popup').style.display = 'block'; 
@@ -110,20 +116,19 @@ function closeabout() {
     document.getElementById('overlay-popup').style.display = 'none'; 
 }
 
+// تحميل الإعدادات المحفوظة
 function loadSettings() {
-    // تحميل اختيار HEN أو GoldHEN
     if (localStorage.getItem('HEN')) {
-        document.querySelector('input[value="HEN"]').checked = true;
+        const henRadio = document.querySelector('input[value="HEN"]');
+        if(henRadio) henRadio.checked = true;
     } else {
-        document.querySelector('input[value="GoldHEN"]').checked = true;
+        const goldRadio = document.querySelector('input[value="GoldHEN"]');
+        if(goldRadio) goldRadio.checked = true;
         localStorage.setItem('GoldHEN', '1');
     }
     
-    // تحميل إعدادات الكونسول والتلقائي
-    if (localStorage.getItem('ckbaj') == 'true') document.getElementById('ckbaj').checked = true;
-}
-
-// حفظ الإعدادات عند التغيير
-function savejbflavor() {
-    // تُستدعى من الـ HTML
+    if (localStorage.getItem('ckbaj') == 'true') {
+        const ckbaj = document.getElementById('ckbaj');
+        if(ckbaj) ckbaj.checked = true;
+    }
 }
