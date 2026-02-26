@@ -1,5 +1,6 @@
 CACHE MANIFEST 
-# v4.0.7 - Stable Build
+# v4.0.9 - Pro Stable
+# Date: 2026-02-27
 
 CACHE:
 index.html
@@ -7,14 +8,14 @@ js/index.js
 payloads/GoldHEN/GoldHEN.bin
 payloads/HEN/HEN.bin
 
-# PSFree Core
+# PSFree Core Files
 psfree/alert.mjs
 psfree/config.mjs
 psfree/lapse.mjs
 psfree/psfree.mjs
 psfree/send.mjs
 
-# PSFree Modules
+# PSFree Modules (ضرورية جداً للعمل أوفلاين)
 psfree/module/chain.mjs
 psfree/module/int64.mjs
 psfree/module/mem.mjs
@@ -24,13 +25,16 @@ psfree/module/rw.mjs
 psfree/module/utils.mjs
 psfree/module/view.mjs
 
-# PSFree ROP
+# PSFree ROP Chains
 psfree/rop/ps4/700.mjs
 psfree/rop/ps4/750.mjs
 psfree/rop/ps4/800.mjs
 psfree/rop/ps4/850.mjs
 psfree/rop/ps4/900.mjs
 psfree/rop/ps4/950.mjs
+
+# Kernel Patches (بدونها سيفشل التهكيل الفعلي أوفلاين)
+psfree/kpatch/900.bin
 
 NETWORK:
 *
