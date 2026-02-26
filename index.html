@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html manifest="./PSFree.manifest">
+<html manifest="./PSFree.manifest" lang="ar" dir="rtl">
 <head>
     <script>
         function DLProgress(e){
             var p = (Math.round(e.loaded / e.total * 100));
             document.title = "Installing offline cache: " + p + "%";
-            // إظهار شريط التحميل بالتصميم الجديد
             document.getElementById('cache-status').style.display = 'block';
             document.getElementById('cache-text').innerText = "جاري الحفظ: " + p + "%";
             document.getElementById('cache-bar').style.width = p + "%";
@@ -15,7 +14,7 @@
             document.getElementById('cache-text').innerText = "تم الحفظ بنجاح! افصل الإنترنت وأعد الدخول.";
             setTimeout(function(){
                 document.getElementById('cache-status').style.display = 'none';
-                window.location.href = document.referrer;
+                window.location.reload();
             }, 3000);
         }
         window.applicationCache.addEventListener("progress",DLProgress,false);
@@ -25,8 +24,8 @@
     <meta charset="UTF-8">
     <title>بليغ ستور 2 - Baleegh Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
     <style>
-        /* --- تصميم بليغ ستور 2 --- */
         :root { --dark-navy: #020813; --electric-blue: #00adef; --btn-border: #1fa9dc; }
         body { 
             background: radial-gradient(circle at center, #09162a 0%, var(--dark-navy) 100%); 
@@ -35,58 +34,45 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* شريط التخزين المؤقت */
         #cache-status { position: fixed; top: 0; width: 100%; background: rgba(0,0,0,0.8); z-index: 10000; text-align: center; padding: 10px 0; border-bottom: 2px solid var(--electric-blue); font-size: 18px; display: none; }
         #cache-bar { height: 4px; background: var(--electric-blue); width: 0%; transition: width 0.2s; position: absolute; bottom: 0; left: 0;}
 
-        /* القائمة الجانبية (الموجودة في كودك الأصلي) */
         .floating-menu { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); z-index: 100; display: flex; flex-direction: column; gap: 15px; }
         .menu-btn { background: rgba(0,0,0,0.6); border: 2px solid var(--btn-border); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 150px; text-align: center; font-family: 'Cairo', sans-serif;}
         .menu-btn:hover { background: var(--electric-blue); color: #000; }
 
-        /* العنوان الرئيسي */
         .header-title { font-size: 3.5em; margin: -50px 0 15px 0; text-shadow: 0 0 20px var(--electric-blue); font-weight: 900; }
 
-        /* حالة التوافق (الموجودة في كودك الأصلي) */
         #PS4FW { background: rgba(0,0,0,0.5); padding: 8px 30px; border-radius: 25px; font-size: 18px; border: 1px solid var(--btn-border); direction: ltr; margin-bottom: 30px; }
 
-        /* زر البلايستيشن الرئيسي */
         .ps-btn { width: 160px; height: 160px; border-radius: 50%; background: #04101f; border: 4px solid var(--electric-blue); cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 173, 239, 0.2); transition: transform 0.2s; margin: 0 auto;}
         .ps-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 173, 239, 0.5); }
         .ps-btn svg { width: 70px; fill: var(--electric-blue); }
 
-        /* شاشة التحميل (Loader الخاص بك) */
         .loader { display: none; margin-top: 20px; }
         .loader-circle { width: 50px; height: 50px; border: 5px solid #fff; border-top: 5px solid var(--electric-blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* النوافذ المنبثقة (Popups) */
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; }
         .popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #061121; padding: 25px; border-radius: 12px; border: 2px solid var(--electric-blue); z-index: 1100; width: 85%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto;}
         .popup h2, .popup h3 { color: var(--electric-blue); border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 0; }
-        .close-btn { margin-top: 20px; padding: 10px 20px; background: var(--electric-blue); border: none; color: #000; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        .close-btn { margin-top: 20px; padding: 10px 20px; background: var(--electric-blue); border: none; color: #000; font-weight: bold; border-radius: 5px; cursor: pointer; font-family: 'Cairo', sans-serif; }
         .close-btn::after { content: "إغلاق"; }
         
-        /* تصميم اعدادات الجيلبريك */
         .radio-group label, .settings-container label { display: block; margin: 10px 0; text-align: left; padding-left: 20px; direction: ltr;}
         #listfw { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px;}
         #listfw p { margin: 0; background: #112; padding: 5px 10px; border-radius: 5px; border: 1px solid #334;}
 
-        /* إخفاء عناصر غير مطلوبة في التصميم ولكن مطلوبة برمجياً */
         #update-results { display: none; }
         #DebugConsole { display: none; }
-        #payloads-page { display: none !important; } /* تم إخفاء صفحة البايلودات كما طلبت */
+        #payloads-page { display: none !important; } 
         
-        /* الفوتر */
         footer { position: fixed; bottom: 0; width: 100%; background: rgba(2, 8, 19, 0.95); border-top: 2px solid var(--electric-blue); text-align: center; padding: 10px 0; font-size: 14px; }
         footer span { color: var(--electric-blue); font-weight: bold; }
     </style>
 </head>
 <body>
-    <div id="cache-status">
-        <div id="cache-text">جاري الحفظ للاوفلاين...</div>
-        <div id="cache-bar"></div>
-    </div>
+    <div id="cache-status"><div id="cache-text">جاري الحفظ للاوفلاين...</div><div id="cache-bar"></div></div>
 
     <div class="floating-menu">
         <button onclick="showpayloads()" class="menu-btn" id="payloadsbtn" style="display:none;">Payloads</button>
@@ -107,7 +93,7 @@
     <div id="jailbreak-page">
         <div class="center-btn-wrap">
             <button id="jailbreak" class="ps-btn" title="PlayStation">
-                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M0.69116 21.9548C-0.506476 22.7935 -0.284724 24.2384 2.44769 25.1419C5.18011 26.0455 8.35603 26.2323 11.1505 25.729C11.0707 25.729 11.3102 25.729 11.1505 25.729V22.8774L8.43588 23.8C7.39792 24.1355 6.35997 24.2194 5.32202 23.9677C4.5236 23.7161 4.68328 23.2129 5.64139 22.7935L11.1505 20.7806V17.6774L3.48565 20.4452C2.52754 20.7806 1.56943 21.2839 0.69116 21.9548ZM19.2146 9.37419V17.5097C22.4881 19.1871 25.0431 17.5097 25.0431 13.1484C25.0431 8.70323 23.5261 6.69032 19.1348 5.09677C16.8193 4.25806 14.4241 3.50323 12.0288 3V27.2387L17.6178 29V8.61935C17.6178 7.69677 17.6178 7.02581 18.2565 7.27742C19.1348 7.52903 19.2146 8.45161 19.2146 9.37419ZM29.5941 20.0258C27.2787 19.1871 24.8036 18.8516 22.4083 19.1032C21.0779 19.1906 19.8294 19.5869 18.5759 20.0258V23.2968L23.7656 21.2839C24.8036 20.9484 25.8415 20.8645 26.8795 21.1161C27.6779 21.3677 27.5182 21.871 26.5601 22.2903L18.5759 25.3935V28.5806L29.5941 24.3032C30.3925 23.9677 31.1111 23.5484 31.7499 22.8774C32.3088 22.0387 32.0692 20.8645 29.5941 20.0258Z"></path> </g></svg>
+                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.69116 21.9548C-0.506476 22.7935 -0.284724 24.2384 2.44769 25.1419C5.18011 26.0455 8.35603 26.2323 11.1505 25.729C11.0707 25.729 11.3102 25.729 11.1505 25.729V22.8774L8.43588 23.8C7.39792 24.1355 6.35997 24.2194 5.32202 23.9677C4.5236 23.7161 4.68328 23.2129 5.64139 22.7935L11.1505 20.7806V17.6774L3.48565 20.4452C2.52754 20.7806 1.56943 21.2839 0.69116 21.9548ZM19.2146 9.37419V17.5097C22.4881 19.1871 25.0431 17.5097 25.0431 13.1484C25.0431 8.70323 23.5261 6.69032 19.1348 5.09677C16.8193 4.25806 14.4241 3.50323 12.0288 3V27.2387L17.6178 29V8.61935C17.6178 7.69677 17.6178 7.02581 18.2565 7.27742C19.1348 7.52903 19.2146 8.45161 19.2146 9.37419ZM29.5941 20.0258C27.2787 19.1871 24.8036 18.8516 22.4083 19.1032C21.0779 19.1906 19.8294 19.5869 18.5759 20.0258V23.2968L23.7656 21.2839C24.8036 20.9484 25.8415 20.8645 26.8795 21.1161C27.6779 21.3677 27.5182 21.871 26.5601 22.2903L18.5759 25.3935V28.5806L29.5941 24.3032C30.3925 23.9677 31.1111 23.5484 31.7499 22.8774C32.3088 22.0387 32.0692 20.8645 29.5941 20.0258Z"></path></svg>
             </button>
         </div>
         <div class="loader" id="loader">
@@ -115,13 +101,9 @@
         </div>
     </div>
     
-    <div id="payloads-page">
-       <div class="button-container" id="button-container"></div>
-    </div>
+    <div id="payloads-page"><div class="button-container" id="button-container"></div></div>
     
-    <div id="DebugConsole">
-      <div class="console"><pre id='console'></pre></div>
-    </div>
+    <div id="DebugConsole"><div class="console"><pre id='console'></pre></div></div>
     
     <div class="overlay" id="overlay-popup" onclick="closeabout(); closesettings();"></div>
     <div class="popup" id="about-popup">
