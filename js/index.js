@@ -1,16 +1,14 @@
-const ckbaj = document.getElementById('ckbaj');
-const ckbdc = document.getElementById('ckbdc');
-const consoleDev = document.getElementById("console");
+// Baleegh Store 2 - Core Logic Pro Fix
 var ps4fw;
+const consoleDev = document.getElementById("console");
 
 window.addEventListener('DOMContentLoaded', () => {
     CheckFW();
-    loadajbsettings();
-    loadjbflavor();
-    checksettings();
+    loadSettings();
+    checkVisualTheme();
 });
 
-// ربط زر البلايستيشن بوظيفة الجيلبريك
+// ربط الزر
 document.getElementById('jailbreak').addEventListener('click', jailbreak);
 
 function CheckFW() {
@@ -20,20 +18,21 @@ function CheckFW() {
     
     if (ps4Regex.test(userAgent)) {
         const fwVersion = userAgent.match(ps4Regex)[1];
-        ps4fw = fwVersion.replace('.', '');
-        fwEl.textContent = `PS4 FW: ${fwVersion} | Compatible`;
+        ps4fw = fwVersion;
+        fwEl.textContent = "PS4 FW: " + fwVersion + " | Compatible";
         fwEl.style.color = '#00adef';
     } else {
-        fwEl.textContent = "PC Mode / Unsupported";
+        ps4fw = "9.00"; // افتراضي للحاسوب
+        fwEl.textContent = "PC Mode / Testing on 9.00";
         fwEl.style.color = 'gray';
     }
 }
 
-function checksettings() {
+function checkVisualTheme() {
     const isHen = localStorage.getItem('HEN');
     const color = isHen ? '#FFB84D' : '#00adef';
     const title = document.getElementById('header-title');
-    if(title) title.style.textShadow = `0 0 15px ${color}`;
+    if(title) title.style.textShadow = "0 0 15px " + color;
     
     document.querySelectorAll('.menu-btn').forEach(btn => {
         btn.style.borderColor = color;
@@ -51,7 +50,7 @@ function choosejb(hen) {
         localStorage.removeItem('HEN');
         localStorage.setItem('GoldHEN', '1');
     }
-    checksettings();
+    checkVisualTheme();
 }
 
 async function jailbreak() {
@@ -60,66 +59,71 @@ async function jailbreak() {
         return;
     }
     
-    log("جاري البدء... يرجى الانتظار.");
+    // إخفاء الزر وإظهار اللودر
+    document.getElementById('jailbreak').style.display = 'none';
+    document.getElementById('loader').style.display = 'block';
     
+    log("جاري تحضير ثغرة PSFree...");
+
+    // تحديد مسار البيلود الذي سيتم تشغيله بعد الثغرة
+    if (localStorage.getItem('HEN')) {
+        window.payload_path = "./payloads/HEN/HEN.bin";
+    } else {
+        window.payload_path = "./payloads/GoldHEN/GoldHEN.bin";
+    }
+
     try {
-        // 1. استدعاء ملف تحديد المسارات أولاً (تم إصلاح المسار ليكون ./)
-        const JailbreakModule = await import('./payloads/Jailbreak.js');
-        
-        // 2. تحديد نوع التهكير بناءً على اختيارك
-        if (localStorage.getItem('HEN')) {
-            JailbreakModule.HEN();
-        } else {
-            JailbreakModule.GoldHEN();
-        }
-        
-        // 3. تشغيل الثغرة الفعلية بعد تحديد المسار
-        await import('./psfree/alert.mjs');
-        
+        // استدعاء ملف alert.mjs وهو بدوره سيقوم بعمل import لـ psfree.mjs
+        // هذا هو المسار الصحيح للملفات التي أرسلتها لي
+        await import('../psfree/alert.mjs');
+        log("تم تحميل موديلات الثغرة بنجاح.");
     } catch (e) { 
         log("خطأ في التحميل: " + e);
-        alert("حدث خطأ! تأكد من وجود ملفات الجيلبريك في مساراتها الصحيحة.");
+        document.getElementById('jailbreak').style.display = 'flex';
+        document.getElementById('loader').style.display = 'none';
+        alert("تأكد من وجود مجلد psfree والملفات بداخله.");
     }
 }
 
 function log(msg) {
     if(consoleDev) {
-        consoleDev.textContent += msg + "\n";
+        consoleDev.textContent += "[+] " + msg + "\n";
         consoleDev.scrollTop = consoleDev.scrollHeight;
     }
 }
 
+// الوظائف المساعدة للنافذة المنبثقة
 function showsettings() { 
     document.getElementById('settings-popup').style.display = 'block'; 
     document.getElementById('overlay-popup').style.display = 'block'; 
 }
-
+function closesettings() { 
+    document.getElementById('settings-popup').style.display = 'none'; 
+    document.getElementById('overlay-popup').style.display = 'none'; 
+}
 function showabout() { 
     document.getElementById('about-popup').style.display = 'block'; 
     document.getElementById('overlay-popup').style.display = 'block'; 
 }
-
-function closeAll() { 
-    document.querySelectorAll('.popup, .overlay').forEach(el => el.style.display = 'none'); 
+function closeabout() { 
+    document.getElementById('about-popup').style.display = 'none'; 
+    document.getElementById('overlay-popup').style.display = 'none'; 
 }
 
-function loadjbflavor() {
-    const savedHen = localStorage.getItem('HEN');
-    const savedGold = localStorage.getItem('GoldHEN');
-    
-    if (savedHen) {
-        const el = document.querySelector('input[value="HEN"]');
-        if(el) el.checked = true;
-    } else if (savedGold) {
-        const el = document.querySelector('input[value="GoldHEN"]');
-        if(el) el.checked = true;
+function loadSettings() {
+    // تحميل اختيار HEN أو GoldHEN
+    if (localStorage.getItem('HEN')) {
+        document.querySelector('input[value="HEN"]').checked = true;
     } else {
-        // تعيين GoldHEN كافتراضي إذا لم يختر المستخدم شيئاً
-        const el = document.querySelector('input[value="GoldHEN"]');
-        if(el) el.checked = true;
+        document.querySelector('input[value="GoldHEN"]').checked = true;
         localStorage.setItem('GoldHEN', '1');
     }
+    
+    // تحميل إعدادات الكونسول والتلقائي
+    if (localStorage.getItem('ckbaj') == 'true') document.getElementById('ckbaj').checked = true;
 }
 
-function loadajbsettings() {
-    if
+// حفظ الإعدادات عند التغيير
+function savejbflavor() {
+    // تُستدعى من الـ HTML
+}
