@@ -1,6 +1,6 @@
 CACHE MANIFEST 
-# Baleegh Store 2 - Pro Fix
-# v4.0.5
+# Baleegh Store 2 - Fixed
+# v4.0.6
 
 CACHE:
 index.html
@@ -8,7 +8,7 @@ js/index.js
 payloads/GoldHEN/GoldHEN.bin
 payloads/HEN/HEN.bin
 
-# PSFree Core (طابقناها مع ملفاتك المرفوعة)
+# PSFree Core
 psfree/alert.mjs
 psfree/config.mjs
 psfree/lapse.mjs
@@ -33,7 +33,7 @@ psfree/rop/ps4/850.mjs
 psfree/rop/ps4/900.mjs
 psfree/rop/ps4/950.mjs
 
-# PSFree Kernel Patches
+# PSFree Kernel Patches (تأكد من وجود هذه الملفات في مجلد kpatch)
 psfree/kpatch/700.bin
 psfree/kpatch/701.bin
 psfree/kpatch/702.bin
