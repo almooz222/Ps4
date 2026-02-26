@@ -1,76 +1,52 @@
-// Baleegh Store 2 - Pro Edition (Final Stable Build)
-var ps4fw;
+// Baleegh Store - Optimized For Offline Use
+const ckbaj = document.getElementById('ckbaj');
 const consoleDev = document.getElementById("console");
+const menuBtns = document.querySelectorAll('.menu-btn');
+const psBtns = document.querySelectorAll('.ps-btn');
+const plsbtn = document.querySelectorAll('.button-container button');
 
-// تهيئة الصفحة عند التحميل
+var ps4fw;
+
+// تهيئة الصفحة
 window.addEventListener('DOMContentLoaded', () => {
     CheckFW();
-    loadSettings();
-    checkVisualTheme();
+    loadsettings();
 });
 
-// ربط زر التهكير
+// زر التهكير الأساسي
 document.getElementById('jailbreak').addEventListener('click', jailbreak);
 
-// وظيفة فحص إصدار النظام
+// وظيفة فحص إصدار النظام (من كودك الأصلي مع تحسين)
 function CheckFW() {
     const userAgent = navigator.userAgent;
-    const ps4Regex = /PlayStation 4\/(\d+\.\d+)/;
+    const ps4Regex = /PlayStation(?:;\s*PlayStation)?(?: 4\/| 4 )?(\d+\.\d+)/;
     const fwEl = document.getElementById('PS4FW');
     
     if (ps4Regex.test(userAgent)) {
-        const fwVersion = userAgent.match(ps4Regex)[1];
+        const match = userAgent.match(ps4Regex);
+        const fwVersion = match ? match[1] : "Unknown";
         ps4fw = fwVersion;
-        fwEl.textContent = "PS4 FW: " + fwVersion + " | Compatible";
+        fwEl.textContent = `PS4 FW: ${fwVersion} | Compatible`;
         fwEl.style.color = '#00adef';
+        document.title = "PSFree | " + fwVersion;
     } else {
-        ps4fw = "9.00"; // قيمة افتراضية للتجربة على المتصفحات العادية
-        fwEl.textContent = "PC Mode / Testing on 9.00";
+        ps4fw = "9.00"; // افتراضي للتجربة
+        fwEl.textContent = "PC Mode - Testing Only";
         fwEl.style.color = 'gray';
     }
 }
 
-// تغيير الألوان بناءً على نوع التهكير (HEN أو GoldHEN)
-function checkVisualTheme() {
-    const isHen = localStorage.getItem('HEN');
-    const color = isHen ? '#FFB84D' : '#00adef';
-    const title = document.getElementById('header-title');
-    if(title) title.style.textShadow = "0 0 15px " + color;
-    
-    document.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.style.borderColor = color;
-    });
-    
-    const psBtn = document.querySelector('.ps-btn');
-    if(psBtn) psBtn.style.borderColor = color;
-}
-
-// اختيار نوع التهكير من الإعدادات
-function choosejb(hen) {
-    if (hen === 'HEN') {
-        localStorage.removeItem('GoldHEN');
-        localStorage.setItem('HEN', '1');
-    } else {
-        localStorage.removeItem('HEN');
-        localStorage.setItem('GoldHEN', '1');
-    }
-    checkVisualTheme();
-}
-
-// الوظيفة الأساسية لتشغيل الثغرة
+// وظيفة تشغيل الثغرة (تم تعديلها لتعمل أوفلاين 100%)
 async function jailbreak() {
     if (sessionStorage.getItem('jbsuccess')) {
-        alert("الجهاز مهكر بالفعل! أعد تشغيل الجهاز إذا كنت تريد التهكير مجدداً.");
+        log("الجهاز مهكر بالفعل!");
         return;
     }
-    
-    // تغيير الواجهة لبدء التحميل
-    document.getElementById('jailbreak').style.display = 'none';
-    document.getElementById('loader').style.display = 'block';
-    
-    log("جاري تحضير ثغرة PSFree...");
 
-    // تحديد مسار البيلود الذي سيقرأه ملف lapse.mjs لاحقاً
+    document.getElementById('jailbreak').style.display = 'none';
+    log("جاري تحضير الثغرة... يرجى الانتظار");
+
+    // تحديد مسار البيلود (GoldHEN أو HEN) ليقرأه ملف lapse.mjs لاحقاً
     if (localStorage.getItem('HEN')) {
         window.payload_path = "payloads/HEN/HEN.bin";
     } else {
@@ -78,57 +54,68 @@ async function jailbreak() {
     }
 
     try {
-        // استدعاء ملف alert.mjs
-        // بما أن index.js داخل مجلد js، نستخدم ../ للعودة للمجلد الرئيسي
+        // نستخدم المسار المباشر من المجلد الرئيسي لضمان عدم فشل الكاش
+        // ملاحظة: إذا كان ملف index.js داخل مجلد js، نستخدم ../ للوصول لـ psfree
         await import('../psfree/alert.mjs');
-        log("تم استيراد الموديلات بنجاح. انتظر الثغرة...");
-    } catch (e) { 
-        log("خطأ في الاستيراد: " + e);
+        log("تم تحميل الموديلات. بدأت العملية...");
+    } catch (e) {
+        console.error(e);
+        log("فشل السكربت: تأكد من اكتمال الكاش 100% (Offline Error)");
         document.getElementById('jailbreak').style.display = 'flex';
-        document.getElementById('loader').style.display = 'none';
-        alert("فشل تحميل ملفات الثغرة. تأكد من اكتمال الكاش 100% وحاول مجدداً.");
+        alert("فشل استيراد المودل. يرجى إعادة تفعيل الكاش أونلاين مرة واحدة.");
     }
 }
 
-// وظيفة الكتابة في كونسول الصفحة
+// وظائف التنسيق والألوان بناءً على الاختيار
+function checksettings() {
+    const isHen = localStorage.getItem('HEN');
+    const themeColor = isHen ? '#FFB84D' : '#00adef';
+    
+    document.getElementById('header-title').style.textShadow = `0px 0px 15px ${themeColor}`;
+    document.getElementById('console').style.borderColor = themeColor;
+    
+    plsbtn.forEach(btn => {
+        btn.style.borderColor = themeColor;
+    });
+}
+
+function choosejb(type) {
+    if (type === 'HEN') {
+        localStorage.removeItem('GoldHEN');
+        localStorage.setItem('HEN', '1');
+    } else {
+        localStorage.removeItem('HEN');
+        localStorage.setItem('GoldHEN', '1');
+    }
+    checksettings();
+}
+
+// تحميل الإعدادات المحفوظة
+function loadsettings() {
+    if (localStorage.getItem('HEN')) {
+        const henRadio = document.querySelector('input[value="HEN"]');
+        if (henRadio) henRadio.checked = true;
+    } else {
+        const goldRadio = document.querySelector('input[value="GoldHEN"]');
+        if (goldRadio) goldRadio.checked = true;
+    }
+    
+    // تفعيل الأوتو جيلبريك إذا كان مختاراً
+    if (localStorage.getItem('autojbstate') === 'true' && !sessionStorage.getItem('jbsuccess')) {
+        log("تشغيل تلقائي...");
+        setTimeout(jailbreak, 3000);
+    }
+    
+    checksettings();
+}
+
 function log(msg) {
-    if(consoleDev) {
+    if (consoleDev) {
         consoleDev.textContent += "[+] " + msg + "\n";
         consoleDev.scrollTop = consoleDev.scrollHeight;
     }
 }
 
-// وظائف التحكم في النوافذ المنبثقة
-function showsettings() { 
-    document.getElementById('settings-popup').style.display = 'block'; 
-    document.getElementById('overlay-popup').style.display = 'block'; 
-}
-function closesettings() { 
-    document.getElementById('settings-popup').style.display = 'none'; 
-    document.getElementById('overlay-popup').style.display = 'none'; 
-}
-function showabout() { 
-    document.getElementById('about-popup').style.display = 'block'; 
-    document.getElementById('overlay-popup').style.display = 'block'; 
-}
-function closeabout() { 
-    document.getElementById('about-popup').style.display = 'none'; 
-    document.getElementById('overlay-popup').style.display = 'none'; 
-}
-
-// تحميل الإعدادات المحفوظة
-function loadSettings() {
-    if (localStorage.getItem('HEN')) {
-        const henRadio = document.querySelector('input[value="HEN"]');
-        if(henRadio) henRadio.checked = true;
-    } else {
-        const goldRadio = document.querySelector('input[value="GoldHEN"]');
-        if(goldRadio) goldRadio.checked = true;
-        localStorage.setItem('GoldHEN', '1');
-    }
-    
-    if (localStorage.getItem('ckbaj') == 'true') {
-        const ckbaj = document.getElementById('ckbaj');
-        if(ckbaj) ckbaj.checked = true;
-    }
-}
+// وظائف القوائم (مبسطة)
+function showsettings() { document.getElementById('settings-popup').style.display = 'flex'; document.getElementById('overlay-popup').style.display = 'block'; }
+function closesettings() { document.getElementById('settings-popup').style.display = 'none'; document.getElementById('overlay-popup').style.display = 'none'; }
