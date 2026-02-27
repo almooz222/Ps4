@@ -1,132 +1,125 @@
-// كود بليغ ستور - النسخة النهائية المستقرة
-const ckbaj = document.getElementById('ckbaj');
-const ckbdc = document.getElementById('ckbdc');
-const consoleDev = document.getElementById("console");
-const plsbtn = document.querySelectorAll('.button-container button');
-var ps4fw;
+// --- وظائف عامة مرتبطة بالنافذة ---
 
-// تهيئة الصفحة
-window.addEventListener('DOMContentLoaded', () => {
-    CheckFW();
-    loadsettings();
-});
-
-// ربط زر التهكير برمجياً بقوة (هذا سيحل مشكلة "الزر لا يستجيب")
-const jbBtn = document.getElementById('jailbreak');
-if (jbBtn) {
-    jbBtn.addEventListener('click', jailbreak);
-}
-
-// دالة الطباعة
-function log(msg) {
-    if (consoleDev) {
-        consoleDev.append("[+] " + msg + "\n");
-        consoleDev.scrollTop = consoleDev.scrollHeight;
+window.log = function(msg) {
+    const consoleElem = document.getElementById('console');
+    if (consoleElem) {
+        consoleElem.textContent += "[+] " + msg + "\n";
     }
-}
+    console.log(msg);
+};
 
-// فحص النظام
-function CheckFW() {
+window.CheckFW = function() {
     const userAgent = navigator.userAgent;
-    const ps4Regex = /PlayStation(?:;\s*PlayStation)?(?: 4\/| 4 )?(\d+\.\d+)/;
+    const ps4Regex = /PlayStation 4 (\d+\.\d+)/;
     const fwElem = document.getElementById('PS4FW');
     
     if (ps4Regex.test(userAgent)) {
         const fwVersion = userAgent.match(ps4Regex)[1];
-        ps4fw = fwVersion;
-        if (fwElem) {
-            fwElem.textContent = "PS4 FW: " + fwVersion + " | Compatible";
-            fwElem.style.color = 'green';
-        }
+        if (fwElem) fwElem.textContent = "PS4 FW: " + fwVersion + " | Compatible";
+        return fwVersion;
     } else {
         if (fwElem) fwElem.textContent = "PC Mode / Testing";
+        return "9.00";
     }
-}
-
-// --- الوظيفة الأساسية للتهكير ---
-async function jailbreak() {
-    try {
-        if (sessionStorage.getItem('jbsuccess')) {
-            alert("الجهاز مهكر بالفعل!");
-            return;
-        }
-
-        if (jbBtn) jbBtn.style.display = 'none';
-        log("جاري إطلاق الثغرة...");
-
-        // مسارات البيلودات
-        if (localStorage.getItem('HEN')) {
-            window.payload_path = "payloads/HEN/HEN.bin";
-        } else {
-            window.payload_path = "payloads/GoldHEN/GoldHEN.bin";
-        }
-
-        log("تحميل: " + window.payload_path);
-
-        // الاستدعاء الديناميكي الصحيح:
-        // بما أن index.html في الجذر، فالمسار يجب أن يبدأ بـ ./
-        await import('./psfree/alert.mjs');
-        log("تم التحميل بنجاح.");
-        
-    } catch (e) {
-        // في حال حدوث أي خطأ، ستظهر لك رسالة تنبيه بدلاً من "الصمت"
-        alert("حدث خطأ أثناء التشغيل:\n" + e.message);
-        log("خطأ: " + e.message);
-        if (jbBtn) jbBtn.style.display = 'block';
-    }
-}
-
-// --- بقية وظائف الواجهة والأزرار ---
-function checksettings() {
-    const isHen = localStorage.getItem('HEN');
-    const themeColor = isHen ? '#00F0FF' : '#FFB84D';
-    
-    const header = document.getElementById('header-title');
-    if (header) header.style.textShadow = "0px 0px 15px " + themeColor;
-    
-    if (consoleDev) consoleDev.style.borderColor = themeColor;
-    
-    document.querySelectorAll('.button-container, .ps-btn, .menu-btn').forEach(el => {
-        el.style.borderColor = themeColor;
-    });
-}
-
-// دالة اختيار الجيلبريك، نجعلها Global لكي يراها الـ HTML
-window.choosejb = function(type) {
-    if (type === 'HEN') {
-        localStorage.removeItem('GoldHEN');
-        localStorage.setItem('HEN', '1');
-    } else {
-        localStorage.removeItem('HEN');
-        localStorage.setItem('GoldHEN', '1');
-    }
-    checksettings();
 };
 
-function loadsettings() {
-    if (localStorage.getItem('autojbstate') === 'true' && ckbaj) {
-        ckbaj.checked = true;
-    }
-    if (localStorage.getItem('dbugc') === 'true' && ckbdc) {
-        ckbdc.checked = true;
-        document.getElementById('DebugConsole').style.display = 'flex';
-    }
-    if (localStorage.getItem('HEN')) {
-        const radio = document.querySelector('input[value="HEN"]');
-        if (radio) radio.checked = true;
+window.jailbreak = async function() {
+    if (sessionStorage.getItem('jbsuccess')) {
+        alert("الجهاز مهكر بالفعل!");
+        return;
     }
 
-    checksettings();
+    const loader = document.getElementById('loader');
+    const jbBtn = document.getElementById('jailbreak');
 
-    // الجيلبريك التلقائي
-    if (ckbaj && ckbaj.checked && !sessionStorage.getItem('jbsuccess')) {
-        log("التشغيل التلقائي بعد 3 ثوانٍ...");
-        setTimeout(jailbreak, 3000);
+    if (loader) loader.style.display = 'block';
+    if (jbBtn) jbBtn.style.display = 'none';
+
+    window.log("بدء تشغيل ثغرة PSFree...");
+
+    // تحديد مسار البيلود بناءً على الإعدادات
+    const flavor = localStorage.getItem('jbflavor') || 'GoldHEN';
+    window.payload_path = (flavor === 'HEN') ? "payloads/HEN/HEN.bin" : "payloads/GoldHEN/GoldHEN.bin";
+
+    window.log("البيلود المختار: " + window.payload_path);
+
+    try {
+        // استخدام مسار الاستيراد المباشر من الجذر لضمان عمل الأوفلاين
+        await import('./psfree/alert.mjs');
+    } catch (e) {
+        // يظهر الخطأ هنا على الـ PC فقط، وهذا دليل على أن الزر يعمل
+        alert("تنبيه: " + e.message);
+        if (loader) loader.style.display = 'none';
+        if (jbBtn) jbBtn.style.display = 'block';
     }
-}
+};
 
-// ربط النوافذ المنبثقة
-window.showabout = () => { document.getElementById('about-popup').style.display = 'flex'; document.getElementById('overlay-popup').style.display = 'block'; };
-window.closeabout = () => { document.getElementById('about-popup').style.display = 'none'; document.getElementById('overlay-popup').style.display = 'none'; };
-window.showsettings = () => { document.getElementById('settings-popup').style.display = 'flex'; document.getElementById('overlay-popup').style.display = 'block'; };
-window.closesettings = () => { document.getElementById('settings-popup').style.display = 'none'; document.getElementById('overlay-popup').style.display = 'none'; };
+window.showsettings = function() {
+    document.getElementById('settings-popup').style.display = 'block';
+    document.getElementById('overlay-popup').style.display = 'block';
+};
+
+window.closesettings = function() {
+    document.getElementById('settings-popup').style.display = 'none';
+    document.getElementById('overlay-popup').style.display = 'none';
+};
+
+window.showabout = function() {
+    document.getElementById('about-popup').style.display = 'block';
+    document.getElementById('overlay-popup').style.display = 'block';
+};
+
+window.closeabout = function() {
+    document.getElementById('about-popup').style.display = 'none';
+    document.getElementById('overlay-popup').style.display = 'none';
+};
+
+window.choosejb = function(type) {
+    localStorage.setItem('jbflavor', type);
+    window.log("تم اختيار: " + type);
+};
+
+window.savejbflavor = function() {
+    const radios = document.getElementsByName('hen');
+    for (let r of radios) {
+        if (r.checked) {
+            localStorage.setItem('jbflavor', r.value);
+            break;
+        }
+    }
+};
+
+// --- التهيئة عند التشغيل ---
+window.onload = function() {
+    window.CheckFW();
+
+    // ربط الزر الرئيسي
+    const btn = document.getElementById('jailbreak');
+    if (btn) btn.onclick = window.jailbreak;
+
+    // استعادة الإعدادات المحفوظة
+    const savedFlavor = localStorage.getItem('jbflavor') || 'GoldHEN';
+    const radio = document.querySelector(`input[value="${savedFlavor}"]`);
+    if (radio) radio.checked = true;
+
+    const ckbaj = document.getElementById('ckbaj');
+    if (ckbaj) {
+        ckbaj.checked = (localStorage.getItem('autojb') === 'true');
+        ckbaj.onchange = function() { localStorage.setItem('autojb', ckbaj.checked); };
+        
+        if (ckbaj.checked && !sessionStorage.getItem('jbsuccess')) {
+            setTimeout(window.jailbreak, 3000);
+        }
+    }
+
+    const ckbdc = document.getElementById('ckbdc');
+    const debugConsole = document.getElementById('DebugConsole');
+    if (ckbdc && debugConsole) {
+        ckbdc.checked = (localStorage.getItem('showdebug') !== 'false');
+        debugConsole.style.display = ckbdc.checked ? 'block' : 'none';
+        ckbdc.onchange = function() {
+            localStorage.setItem('showdebug', ckbdc.checked);
+            debugConsole.style.display = ckbdc.checked ? 'block' : 'none';
+        };
+    }
+};
