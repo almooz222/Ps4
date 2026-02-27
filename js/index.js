@@ -1,8 +1,6 @@
-/* PS4 Jailbreak Index JS
-    تم إصلاح مشاكل الـ Module وربط الدوال بـ Window لضمان استجابة الأزرار
+/* Baleegh Store - Pro Offline Fix
+   تم إزالة كل الإضافات التي تمنع الكاش من العمل أوفلاين
 */
-
-// --- تعريف الوظائف وربطها بالنافذة (Global Scope) ---
 
 window.log = function(msg) {
     const consoleDev = document.getElementById("console");
@@ -42,9 +40,9 @@ window.jailbreak = async function() {
         jbBtn.style.opacity = '0.5';
     }
 
-    window.log("جاري استدعاء ثغرة PSFree...");
+    window.log("جاري استدعاء ثغرة PSFree أوفلاين...");
 
-    // اختيار البيلود
+    // المسارات يجب أن تكون مطابقة للمانيفست تماماً
     if (localStorage.getItem('HEN')) {
         window.payload_path = "payloads/HEN/HEN.bin";
     } else {
@@ -52,15 +50,26 @@ window.jailbreak = async function() {
     }
 
     try {
-        // نخرج من مجلد js ونذهب إلى psfree
-        await import('../psfree/alert.mjs?v=' + Date.now());
+        // الاستدعاء المباشر النظيف (بدون Date.now) لكي يتعرف عليه الكاش أوفلاين
+        await import('../psfree/alert.mjs');
         window.log("تم تحميل الملفات بنجاح.");
     } catch (e) {
-        window.log("فشل التحميل: " + e);
+        window.log("فشل التحميل أوفلاين: " + e);
         if (jbBtn) {
             jbBtn.disabled = false;
             jbBtn.style.opacity = '1';
         }
+    }
+};
+
+window.Loadpayloads = async function(payloadName) {
+    window.log("تشغيل بيلود: " + payloadName);
+    window.payload_path = "payloads/" + payloadName + ".bin";
+    try {
+        // الاستدعاء المباشر النظيف
+        await import('../psfree/alert.mjs');
+    } catch (e) {
+        window.log("فشل: " + e);
     }
 };
 
@@ -105,17 +114,14 @@ window.checksettings = function() {
     });
 };
 
-// --- تعريف وظائف الأزرار المنبثقة ---
 window.showabout = () => { document.getElementById('about-popup').style.display = 'flex'; document.getElementById('overlay-popup').style.display = 'block'; };
 window.closeabout = () => { document.getElementById('about-popup').style.display = 'none'; document.getElementById('overlay-popup').style.display = 'none'; };
 window.showsettings = () => { document.getElementById('settings-popup').style.display = 'flex'; document.getElementById('overlay-popup').style.display = 'block'; };
 window.closesettings = () => { document.getElementById('settings-popup').style.display = 'none'; document.getElementById('overlay-popup').style.display = 'none'; };
 
-// --- التشغيل التلقائي عند التحميل ---
 window.addEventListener('load', () => {
     window.CheckFW();
     
-    // استعادة حالة الأزرار
     const ckbaj = document.getElementById('ckbaj');
     const ckbdc = document.getElementById('ckbdc');
     
@@ -131,7 +137,6 @@ window.addEventListener('load', () => {
 
     window.checksettings();
 
-    // السكربت التلقائي
     if (ckbaj && ckbaj.checked && !sessionStorage.getItem('jbsuccess')) {
         window.log("سيتم البدء تلقائياً...");
         setTimeout(window.jailbreak, 3000);
