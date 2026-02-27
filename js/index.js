@@ -44,11 +44,20 @@ window.jailbreak = async function() {
     window.log("البيلود المختار: " + window.payload_path);
 
     try {
-        // استخدام مسار الاستيراد المباشر من الجذر لضمان عمل الأوفلاين
-        await import('./psfree/alert.mjs');
+        // [الحل الجذري والنهائي]: نولد المسار المطلق للموقع لمنع ضياع المتصفح في الأوفلاين
+        // سيقوم هذا الكود بحساب مسار الاستضافة كاملاً ويضيف عليه ملف الثغرة
+        const baseUrl = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+        const modulePath = baseUrl + "psfree/alert.mjs";
+        
+        window.log("جاري استدعاء: " + modulePath);
+        
+        // استدعاء الموديول عبر المسار المطلق المحسوب
+        await import(modulePath);
+        
     } catch (e) {
-        // يظهر الخطأ هنا على الـ PC فقط، وهذا دليل على أن الزر يعمل
-        alert("تنبيه: " + e.message);
+        // في حال حدوث خطأ
+        alert("خطأ: " + e.message);
+        window.log("فشل الاستدعاء: " + e.message);
         if (loader) loader.style.display = 'none';
         if (jbBtn) jbBtn.style.display = 'block';
     }
