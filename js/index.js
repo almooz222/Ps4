@@ -19,7 +19,7 @@ window.CheckFW = function() {
         return fwVersion;
     } else {
         if (fwElem) fwElem.textContent = "PC Mode / Testing";
-        return null; // إصلاح: لا نزور firmware
+        return null;
     }
 };
 
@@ -40,37 +40,30 @@ window.jailbreak = async function() {
 
     const flavor = localStorage.getItem('jbflavor') || 'GoldHEN';
     window.payload_path = (flavor === 'HEN')
-        ? "payloads/HEN/HEN.bin"
-        : "payloads/GoldHEN/GoldHEN.bin";
+        ? "/payloads/HEN/HEN.bin"
+        : "/payloads/GoldHEN/GoldHEN.bin";
 
     window.log("البيلود المختار: " + window.payload_path);
 
     try {
 
-        // الطريقة الأكثر استقراراً على PS4 بدل dynamic import
-        const script = document.createElement('script');
-        script.type = "module";
-        script.src = "./psfree/alert.mjs";
+        // استخدام import المباشر بمسار جذري
+        await import("/psfree/alert.mjs");
 
-        script.onload = function() {
-            window.log("تم تحميل exploit module.");
-        };
+        window.log("تم تحميل exploit module.");
 
-        script.onerror = function(e) {
-            throw new Error("فشل تحميل alert.mjs");
-        };
-
-        document.body.appendChild(script);
-
-        // نعتبر النجاح بعد تحميل الموديول
+        // لا نعتبر النجاح هنا نهائي
+        // لأن النجاح الحقيقي يتم داخل alert.mjs
         sessionStorage.setItem('jbsuccess', 'true');
 
     } catch (e) {
 
-        alert("خطأ: " + e.message);
+        alert("فشل تحميل exploit: " + e.message);
 
         if (loader) loader.style.display = 'none';
         if (jbBtn) jbBtn.style.display = 'block';
+
+        window.log("خطأ: " + e.message);
     }
 };
 
