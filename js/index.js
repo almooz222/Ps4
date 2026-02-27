@@ -1,6 +1,9 @@
-// --- تعريف الدوال الأساسية وربطها بـ window لضمان عمل الأزرار ---
+/* PS4 Jailbreak Index JS
+    تم إصلاح مشاكل الـ Module وربط الدوال بـ Window لضمان استجابة الأزرار
+*/
 
-// دالة الطباعة في الكونسول الخاص بك
+// --- تعريف الوظائف وربطها بالنافذة (Global Scope) ---
+
 window.log = function(msg) {
     const consoleDev = document.getElementById("console");
     if (consoleDev) {
@@ -9,7 +12,6 @@ window.log = function(msg) {
     }
 };
 
-// دالة فحص الإصدار
 window.CheckFW = function() {
     const userAgent = navigator.userAgent;
     const ps4Regex = /PlayStation(?:;\s*PlayStation)?(?: 4\/| 4 )?(\d+\.\d+)/;
@@ -21,18 +23,13 @@ window.CheckFW = function() {
             fwElem.textContent = "PS4 FW: " + fwVersion + " | Compatible";
             fwElem.style.color = 'green';
         }
-        document.title = "PSFree | " + fwVersion;
         return fwVersion;
     } else {
-        if (fwElem) {
-            fwElem.textContent = "PC Mode / Testing";
-            fwElem.style.color = 'gray';
-        }
-        return "9.00"; // افتراضي للتجربة
+        if (fwElem) fwElem.textContent = "PC Mode / Testing";
+        return "9.00"; 
     }
 };
 
-// --- وظيفة التهكير الرئيسية ---
 window.jailbreak = async function() {
     if (sessionStorage.getItem('jbsuccess')) {
         window.log("الجهاز مهكر بالفعل!");
@@ -41,69 +38,30 @@ window.jailbreak = async function() {
 
     const jbBtn = document.getElementById('jailbreak');
     if (jbBtn) {
-        jbBtn.style.pointerEvents = 'none';
+        jbBtn.disabled = true;
         jbBtn.style.opacity = '0.5';
     }
 
-    window.log("بدء تشغيل PSFree...");
+    window.log("جاري استدعاء ثغرة PSFree...");
 
-    // تحديد المسار
+    // اختيار البيلود
     if (localStorage.getItem('HEN')) {
         window.payload_path = "payloads/HEN/HEN.bin";
     } else {
         window.payload_path = "payloads/GoldHEN/GoldHEN.bin";
     }
 
-    window.log("البيلود: " + window.payload_path);
-
     try {
-        // استدعاء الثغرة (المسار الصحيح بالنسبة لمجلد js هو ../psfree/)
+        // نخرج من مجلد js ونذهب إلى psfree
         await import('../psfree/alert.mjs?v=' + Date.now());
+        window.log("تم تحميل الملفات بنجاح.");
     } catch (e) {
-        window.log("خطأ: " + e);
+        window.log("فشل التحميل: " + e);
         if (jbBtn) {
-            jbBtn.style.pointerEvents = 'all';
+            jbBtn.disabled = false;
             jbBtn.style.opacity = '1';
         }
     }
-};
-
-// تحميل البيلودات الفرعية
-window.Loadpayloads = async function(payloadName) {
-    window.log("تشغيل بيلود: " + payloadName);
-    window.payload_path = "payloads/" + payloadName + ".bin";
-    try {
-        await import('../psfree/alert.mjs?v=' + Date.now());
-    } catch (e) {
-        window.log("فشل: " + e);
-    }
-};
-
-// --- إدارة الواجهة والألوان ---
-window.checksettings = function() {
-    const isHen = localStorage.getItem('HEN');
-    const themeColor = isHen ? '#00F0FF' : '#FFB84D';
-    
-    const header = document.getElementById('header-title');
-    if (header) header.style.textShadow = "0px 0px 15px " + themeColor;
-    
-    const consoleBox = document.getElementById('console');
-    if (consoleBox) consoleBox.style.borderColor = themeColor;
-    
-    document.querySelectorAll('.button-container, .ps-btn, .menu-btn').forEach(el => {
-        el.style.borderColor = themeColor;
-    });
-};
-
-window.choosejb = function(type) {
-    if (type === 'HEN') {
-        localStorage.removeItem('GoldHEN');
-        localStorage.setItem('HEN', '1');
-    } else {
-        localStorage.removeItem('HEN');
-        localStorage.setItem('GoldHEN', '1');
-    }
-    window.checksettings();
 };
 
 window.showpayloads = function() {
@@ -124,23 +82,46 @@ window.showpayloads = function() {
     }
 };
 
-// --- النوافذ المنبثقة ---
+window.choosejb = function(type) {
+    if (type === 'HEN') {
+        localStorage.removeItem('GoldHEN');
+        localStorage.setItem('HEN', '1');
+    } else {
+        localStorage.removeItem('HEN');
+        localStorage.setItem('GoldHEN', '1');
+    }
+    window.checksettings();
+};
+
+window.checksettings = function() {
+    const isHen = localStorage.getItem('HEN');
+    const themeColor = isHen ? '#00F0FF' : '#FFB84D';
+    
+    const header = document.getElementById('header-title');
+    if (header) header.style.textShadow = "0px 0px 15px " + themeColor;
+    
+    document.querySelectorAll('.button-container, .ps-btn, .menu-btn').forEach(el => {
+        el.style.borderColor = themeColor;
+    });
+};
+
+// --- تعريف وظائف الأزرار المنبثقة ---
 window.showabout = () => { document.getElementById('about-popup').style.display = 'flex'; document.getElementById('overlay-popup').style.display = 'block'; };
 window.closeabout = () => { document.getElementById('about-popup').style.display = 'none'; document.getElementById('overlay-popup').style.display = 'none'; };
 window.showsettings = () => { document.getElementById('settings-popup').style.display = 'flex'; document.getElementById('overlay-popup').style.display = 'block'; };
 window.closesettings = () => { document.getElementById('settings-popup').style.display = 'none'; document.getElementById('overlay-popup').style.display = 'none'; };
 
-// --- التشغيل عند تحميل الصفحة ---
-window.addEventListener('DOMContentLoaded', () => {
+// --- التشغيل التلقائي عند التحميل ---
+window.addEventListener('load', () => {
     window.CheckFW();
     
-    // استرجاع الإعدادات
-    if (localStorage.getItem('autojbstate') === 'true') {
-        document.getElementById('ckbaj').checked = true;
-    }
+    // استعادة حالة الأزرار
+    const ckbaj = document.getElementById('ckbaj');
+    const ckbdc = document.getElementById('ckbdc');
     
-    if (localStorage.getItem('dbugc') === 'true') {
-        document.getElementById('ckbdc').checked = true;
+    if (ckbaj && localStorage.getItem('autojbstate') === 'true') ckbaj.checked = true;
+    if (ckbdc && localStorage.getItem('dbugc') === 'true') {
+        ckbdc.checked = true;
         document.getElementById('DebugConsole').style.display = 'flex';
     }
 
@@ -150,18 +131,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     window.checksettings();
 
-    // تشغيل تلقائي
-    if (document.getElementById('ckbaj').checked && !sessionStorage.getItem('jbsuccess')) {
-        window.log("تشغيل تلقائي بعد 3 ثوانٍ...");
+    // السكربت التلقائي
+    if (ckbaj && ckbaj.checked && !sessionStorage.getItem('jbsuccess')) {
+        window.log("سيتم البدء تلقائياً...");
         setTimeout(window.jailbreak, 3000);
     }
-});
-
-// ربط الأحداث للعناصر التي قد لا تملك onclick في الـ HTML
-document.getElementById('jailbreak')?.addEventListener('click', window.jailbreak);
-document.getElementById('payloadsbtn')?.addEventListener('click', window.showpayloads);
-document.getElementById('ckbaj')?.addEventListener('change', (e) => localStorage.setItem('autojbstate', e.target.checked));
-document.getElementById('ckbdc')?.addEventListener('change', (e) => {
-    localStorage.setItem('dbugc', e.target.checked);
-    document.getElementById('DebugConsole').style.display = e.target.checked ? 'flex' : 'none';
 });
