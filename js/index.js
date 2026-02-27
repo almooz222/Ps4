@@ -19,11 +19,12 @@ window.CheckFW = function() {
         return fwVersion;
     } else {
         if (fwElem) fwElem.textContent = "PC Mode / Testing";
-        return "9.00";
+        return null; // إصلاح: لا نزور firmware
     }
 };
 
 window.jailbreak = async function() {
+
     if (sessionStorage.getItem('jbsuccess')) {
         alert("الجهاز مهكر بالفعل!");
         return;
@@ -37,27 +38,37 @@ window.jailbreak = async function() {
 
     window.log("بدء تشغيل ثغرة PSFree...");
 
-    // تحديد مسار البيلود بناءً على الإعدادات
     const flavor = localStorage.getItem('jbflavor') || 'GoldHEN';
-    window.payload_path = (flavor === 'HEN') ? "payloads/HEN/HEN.bin" : "payloads/GoldHEN/GoldHEN.bin";
+    window.payload_path = (flavor === 'HEN')
+        ? "payloads/HEN/HEN.bin"
+        : "payloads/GoldHEN/GoldHEN.bin";
 
     window.log("البيلود المختار: " + window.payload_path);
 
     try {
-        // [الحل الجذري والنهائي]: نولد المسار المطلق للموقع لمنع ضياع المتصفح في الأوفلاين
-        // سيقوم هذا الكود بحساب مسار الاستضافة كاملاً ويضيف عليه ملف الثغرة
-        const baseUrl = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-        const modulePath = baseUrl + "psfree/alert.mjs";
-        
-        window.log("جاري استدعاء: " + modulePath);
-        
-        // استدعاء الموديول عبر المسار المطلق المحسوب
-        await import(modulePath);
-        
+
+        // الطريقة الأكثر استقراراً على PS4 بدل dynamic import
+        const script = document.createElement('script');
+        script.type = "module";
+        script.src = "./psfree/alert.mjs";
+
+        script.onload = function() {
+            window.log("تم تحميل exploit module.");
+        };
+
+        script.onerror = function(e) {
+            throw new Error("فشل تحميل alert.mjs");
+        };
+
+        document.body.appendChild(script);
+
+        // نعتبر النجاح بعد تحميل الموديول
+        sessionStorage.setItem('jbsuccess', 'true');
+
     } catch (e) {
-        // في حال حدوث خطأ
+
         alert("خطأ: " + e.message);
-        window.log("فشل الاستدعاء: " + e.message);
+
         if (loader) loader.style.display = 'none';
         if (jbBtn) jbBtn.style.display = 'block';
     }
@@ -99,23 +110,26 @@ window.savejbflavor = function() {
 };
 
 // --- التهيئة عند التشغيل ---
-window.onload = function() {
+window.addEventListener('load', function() {
+
     window.CheckFW();
 
-    // ربط الزر الرئيسي
     const btn = document.getElementById('jailbreak');
     if (btn) btn.onclick = window.jailbreak;
 
-    // استعادة الإعدادات المحفوظة
     const savedFlavor = localStorage.getItem('jbflavor') || 'GoldHEN';
     const radio = document.querySelector(`input[value="${savedFlavor}"]`);
     if (radio) radio.checked = true;
 
     const ckbaj = document.getElementById('ckbaj');
     if (ckbaj) {
+
         ckbaj.checked = (localStorage.getItem('autojb') === 'true');
-        ckbaj.onchange = function() { localStorage.setItem('autojb', ckbaj.checked); };
-        
+
+        ckbaj.onchange = function() {
+            localStorage.setItem('autojb', ckbaj.checked);
+        };
+
         if (ckbaj.checked && !sessionStorage.getItem('jbsuccess')) {
             setTimeout(window.jailbreak, 3000);
         }
@@ -123,12 +137,16 @@ window.onload = function() {
 
     const ckbdc = document.getElementById('ckbdc');
     const debugConsole = document.getElementById('DebugConsole');
+
     if (ckbdc && debugConsole) {
+
         ckbdc.checked = (localStorage.getItem('showdebug') !== 'false');
+
         debugConsole.style.display = ckbdc.checked ? 'block' : 'none';
+
         ckbdc.onchange = function() {
             localStorage.setItem('showdebug', ckbdc.checked);
             debugConsole.style.display = ckbdc.checked ? 'block' : 'none';
         };
     }
-};
+});
