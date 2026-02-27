@@ -64,8 +64,9 @@
         #listfw p { margin: 0; background: #112; padding: 5px 10px; border-radius: 5px; border: 1px solid #334;}
 
         #update-results { display: none; }
-        #DebugConsole { display: none; }
-        #payloads-page { display: none !important; } 
+        #DebugConsole { display: none; border: 1px solid var(--electric-blue); margin-top: 10px; background: #000; width: 80%; max-height: 150px; overflow-y: auto;}
+        #console { color: #0f0; font-family: monospace; padding: 10px; white-space: pre-wrap; margin: 0;}
+        #payloads-page { display: none; } 
         
         footer { position: fixed; bottom: 0; width: 100%; background: rgba(2, 8, 19, 0.95); border-top: 2px solid var(--electric-blue); text-align: center; padding: 10px 0; font-size: 14px; }
         footer span { color: var(--electric-blue); font-weight: bold; }
@@ -103,7 +104,7 @@
     
     <div id="payloads-page"><div class="button-container" id="button-container"></div></div>
     
-    <div id="DebugConsole"><div class="console"><pre id='console'></pre></div></div>
+    <div id="DebugConsole"><pre id='console'></pre></div>
     
     <div class="overlay" id="overlay-popup" onclick="closeabout(); closesettings();"></div>
     <div class="popup" id="about-popup">
