@@ -18,14 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 // We can't just open a console on the ps4 browser, make sure the errors thrown
 // by our program are alerted.
 
-// We don't use a custom logging function to avoid a dependency on a logging
-// module since we want this file to stand alone. We don't want to copy the
-// log function here either for the sake avoiding dependencies since using
-// alert() is good enough.
-
-// We log the line and column numbers as well since some exceptions (like
-// SyntaxError) do not show it in the stack trace.
-
 addEventListener("unhandledrejection", (event) => {
   const reason = event.reason;
   alert(`Unhandled rejection\n${reason}\n${reason.sourceURL}:${reason.line}:${reason.column}\n${reason.stack}`);
@@ -37,6 +29,12 @@ addEventListener("error", (event) => {
   return true;
 });
 
-// we have to dynamically import the program if we want to catch its syntax
-// errors
-import("./psfree.mjs");
+// الحل: الاستيراد الديناميكي بمسار مناسب مع التعامل مع حالات الفشل
+(async () => {
+  try {
+    // تأكد من الامتداد الصحيح، حيث بعض متصفحات PS4 لا تدعم mjs، جرب js إذا ظهرت مشاكل
+    await import("./psfree.mjs"); // لو لم يعمل، جرب بدل الامتداد js في جميع الملفات والمنافست أيضا
+  } catch(e) {
+    alert("فشل تحميل psfree الموديول: " + e.message);
+  }
+})();
